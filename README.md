@@ -1,6 +1,6 @@
 # SENG696_G6
 
-#Group Member
+Group Member
 1. Md. Shohug Hossain
 2. Grg Gandala
 3. Rohit Yeast
