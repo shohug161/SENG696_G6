@@ -5,13 +5,13 @@ import java.util.function.Consumer;
 
 public class ModelAndUtility {
 
-	private class RequestModel {
+	public class RequestModel {
 		
 		public RequestInfoModel requestInfo;
 		public ArrayList<TaskModel> requestTasks;
 	}
 	
-	private class RequestInfoModel {
+	public class RequestInfoModel {
 		public int requestID;
 		public String softwareName;
 		public String departmentName;
@@ -26,7 +26,7 @@ public class ModelAndUtility {
 		public String comments;
 	}
 	
-	private class TaskModel {
+	public class TaskModel {
 		private int taskID;
 		public RequestInfoModel requestInfo;
 		public String teamName;
@@ -67,7 +67,4 @@ public class ModelAndUtility {
 	public enum InformationType {
 		LEVEL1, LEVEL2, LEVEL3, LEVEL4;
 	}
-	
-	
-	
 }
