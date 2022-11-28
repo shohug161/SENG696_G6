@@ -5,7 +5,7 @@ import java.io.Serializable;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.MessageTemplate;
-import mkf.jade.sar.ModelAndUtility.RequestInfoModel;
+import mkf.jade.sar.model.*;
 import jade.lang.acl.ACLMessage;
 
 // TODO
