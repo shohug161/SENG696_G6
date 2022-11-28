@@ -48,26 +48,10 @@ public class ModelAndUtility
 		
 	}
 	
-	public class Event<T> 
+	public class TrainingData
 	{
-		
-		public ArrayList<Consumer<T>> subscribers;
-		
-		public void addSubscriber(Consumer<T> subscriber) {
-			subscribers.add(subscriber);
-		}
-		
-		public void removeSubscriber(Consumer<T> subscriber) {
-			for (int i = 0; i < subscribers.size(); i++) {
-				if (subscribers.get(i) == subscriber) {
-					subscribers.remove(i);
-				}
-			}
-		}
-		
-		public void invoke(T t) {
-			
-		}
+		public int trainingID;
+		public String traineeName;
 	}
 	
 	public enum InformationType 
