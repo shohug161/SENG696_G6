@@ -2,6 +2,7 @@ package mkf.jade.sar.model;
 
 public enum TeamType 
 {
+	noTeam,		// default value, used to indicate no one is logged in
 	requestor, 
 	zoneManager,
 	asrc,	// Architecture & Security, Risk & Compliance
