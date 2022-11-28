@@ -2,6 +2,13 @@ package mkf.jade.sar.model;
 
 public class RequestInfoModel 
 {
+	public RequestInfoModel()
+	{
+		requestID = idOffset++;
+	}
+	
+	private static int idOffset = 0;
+	
 	public int requestID;
 	public String softwareName;
 	public String departmentName;
