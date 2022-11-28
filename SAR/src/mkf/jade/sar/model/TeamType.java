@@ -1,6 +1,6 @@
 package mkf.jade.sar.model;
 
-public enum TeamTypes 
+public enum TeamType 
 {
 	requestor, 
 	zoneManager,
