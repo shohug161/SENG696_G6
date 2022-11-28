@@ -11,7 +11,7 @@ public class ModelAndUtility {
 		public ArrayList<TaskModel> requestTasks;
 	}
 	
-	private class RequestInfoModel {
+	class RequestInfoModel {
 		public int requestID;
 		public String softwareName;
 		public String departmentName;
@@ -24,6 +24,11 @@ public class ModelAndUtility {
 		public String vendorName;
 		public String vendorEmail;
 		public String comments;
+		
+		public RequestInfoModel()
+		{
+			
+		}
 	}
 	
 	private class TaskModel {
@@ -47,20 +52,29 @@ public class ModelAndUtility {
 		
 		public ArrayList<Consumer<T>> subscribers;
 		
-		public void addSubscriber(Consumer<T> subscriber) {
+		public void addSubscriber(Consumer<T> subscriber) 
+		{
 			subscribers.add(subscriber);
 		}
 		
-		public void removeSubscriber(Consumer<T> subscriber) {
-			for (int i = 0; i < subscribers.size(); i++) {
-				if (subscribers.get(i) == subscriber) {
+		public void removeSubscriber(Consumer<T> subscriber) 
+		{
+			for (int i = 0; i < subscribers.size(); i++) 
+			{
+				if (subscribers.get(i) == subscriber) 
+				{
 					subscribers.remove(i);
 				}
 			}
 		}
 		
-		public void invoke(T t) {
+		public void invoke(T t) 
+		{
 			
+			for(int i = 0; i < subscribers.size(); i++)
+			{
+				subscribers.get(i).accept(t);
+			}
 		}
 	}
 	
