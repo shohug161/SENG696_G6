@@ -14,4 +14,21 @@ public class RequestInfoModel
 	public String vendorName;
 	public String vendorEmail;
 	public String comments;
+	
+	public RequestInfoModel (int reqID, String swName, String depName, int numUsers, double swCost, String busReason, InformationType iType, String reqName, String reqEmail, 
+			String vName, String vEmail, String comm)
+	{
+		requestID = reqID;
+		softwareName = swName;
+		departmentName = depName;
+		numberOfUsers = numUsers;
+		softwareCost = swCost;
+		businessReason = busReason;
+		informationType = iType;
+		requestorName = reqName;
+		requestorEmail = reqEmail;
+		vendorName = vName;
+		vendorEmail = vEmail;
+		comments = comm;
+	}
 }
