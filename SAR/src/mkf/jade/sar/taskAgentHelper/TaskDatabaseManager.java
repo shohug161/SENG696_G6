@@ -16,7 +16,7 @@ public class TaskDatabaseManager
 	 */
 	public boolean getRequestorTraingStatus(String name)
 	{
-		// TODO
+		// TODO get requestor training status
 		
 		return false;
 	}
@@ -27,6 +27,6 @@ public class TaskDatabaseManager
 	 */
 	public void addCompletedRequest(RequestInfoModel request)
 	{
-		// TODO
+		// TODO add completed request
 	}
 }

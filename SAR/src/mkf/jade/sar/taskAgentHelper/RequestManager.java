@@ -17,7 +17,6 @@ public class RequestManager
 		m_taskDatabaseManager = taskDatabaseManager;
 		m_requestModel = new RequestModel(requestInfo);
 		
-		
 		createTask(TeamType.zoneManager);
 	}
 	
@@ -232,7 +231,7 @@ public class RequestManager
 			System.out.println("Request " + getRequestInfo() + " COMPLETED");
 			
 			m_taskDatabaseManager.addCompletedRequest(getRequestInfo());
-			m_taskCommunicator.requestComplete(getRequestInfo());
+			m_taskCommunicator.requestComplete(getRequestInfo());	// Must be last
 		}
 		else
 		{

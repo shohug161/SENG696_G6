@@ -18,6 +18,9 @@ public class TaskCommunicator extends SimpleBehaviour
 
 	/*******************************  Member Variables   ****************************************/
 
+	/**
+	 * The agent that handles all requests and tasks
+	 */
 	private TaskAgent m_taskAgent;
 
 	/**
@@ -30,15 +33,17 @@ public class TaskCommunicator extends SimpleBehaviour
 	@Override
 	public void action() 
 	{
-		
-		
-		
-		
+		// TODO Handle request submitted
+		// TODO Handle user logon
+		// TODO Handle training complete
+		// TODO Handle task complete
+		// TODO Handle request denied		
 	}
 
 	@Override
-	public boolean done() {
-		
+	public boolean done() 
+	{
+		// TODO figure out what this is and how to use it
 		
 		return false;
 	}
@@ -48,19 +53,19 @@ public class TaskCommunicator extends SimpleBehaviour
 	
 	public void sendTaskToUI(TaskModel task)
 	{
-		// TODO
+		// TODO Send message
 	}
 	
 	
 	public void sendNotification(TaskModel task)
 	{
-		// TODO
+		// TODO send task notification
 	}
 	
 	
 	public void enableTraining(String requestorName)
 	{
-		// TODO
+		// TODO send enable training
 	}
 	
 	
@@ -72,24 +77,24 @@ public class TaskCommunicator extends SimpleBehaviour
 	
 	public void notifyVendor(RequestInfoModel request)
 	{
-		// TODO
+		// TODO send notify vendor 
 	}
 	
 	public void scheduleSoftwareInstallation(RequestInfoModel requestInfo)
 	{
-		// TODO
+		// TODO send schedule software installation 
 	}
 	
 	
 	public void requestCanceled(RequestInfoModel request)
 	{
-		// TODO
+		// TODO Send request cancelled message
 	}
 	
 	
 	public void requestComplete(RequestInfoModel request)
 	{
-		// TODO send message
-		// TODO remove request
+		// TODO send request complete
+		m_taskAgent.requestCompleted(request.requestID);
 	}
 }
