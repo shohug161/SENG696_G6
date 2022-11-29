@@ -1,6 +1,7 @@
 package mkf.jade.sar.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TaskModel 
 {
@@ -14,12 +15,31 @@ public class TaskModel
 		isComplete = false;
 	}
 	
-	static int idOffset = 0; 
+	private static int idOffset = 0; 
 	
-	private int taskID;
+	public int taskID;
 	public RequestInfoModel requestInfo;
 	public TeamType team;
 	public String teamContact;
 	public ArrayList<TaskItemModel> taskItems;
 	public boolean isComplete;
+	
+	
+	public void UpdateIsComplete()
+	{
+		// Only update the taskItems in this method if there are task items
+		if(taskItems.size() > 0)
+		{
+			Iterator<TaskItemModel> allTaskItems = taskItems.iterator(); 
+			
+			// Should only be true if all task items are complete
+			boolean allComplete = true;
+			
+			while(allTaskItems.hasNext())
+			{
+				allComplete = allComplete && allTaskItems.next().isComplete;
+			}
+			isComplete = allComplete;
+		}
+	}
 }
