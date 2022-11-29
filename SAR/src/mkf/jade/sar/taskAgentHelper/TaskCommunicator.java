@@ -70,6 +70,11 @@ public class TaskCommunicator extends SimpleBehaviour
 	}
 	
 	
+	public void notifyVendor(RequestInfoModel request)
+	{
+		// TODO
+	}
+	
 	public void scheduleSoftwareInstallation(RequestInfoModel requestInfo)
 	{
 		// TODO
@@ -84,6 +89,7 @@ public class TaskCommunicator extends SimpleBehaviour
 	
 	public void requestComplete(RequestInfoModel request)
 	{
-		// TODO
+		// TODO send message
+		// TODO remove request
 	}
 }

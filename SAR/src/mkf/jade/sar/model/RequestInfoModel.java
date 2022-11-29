@@ -18,7 +18,14 @@ public class RequestInfoModel
 	public InformationType informationType;
 	public String requestorName;
 	public String requestorEmail;
+	public int trainingID;
 	public String vendorName;
 	public String vendorEmail;
 	public String comments;
+	
+	@Override
+	public String toString()
+	{
+		return "Software Name: \"" + softwareName + "\"  Request ID: " + requestID; 
+	}
 }

@@ -25,7 +25,7 @@ public class TaskModel
 	public boolean isComplete;
 	
 	
-	public void UpdateIsComplete()
+	public void updateIsComplete()
 	{
 		// Only update the taskItems in this method if there are task items
 		if(taskItems.size() > 0)

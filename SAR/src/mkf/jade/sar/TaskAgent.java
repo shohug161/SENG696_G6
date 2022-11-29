@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import mkf.jade.sar.model.*;
 import mkf.jade.sar.taskAgentHelper.*;
 
+/**
+ * Manages all software aquisition requests and works with other agents to complete the 
+ * @author Rohit
+ */
 public class TaskAgent extends EnhancedAgent 
 {
 	
@@ -14,22 +18,31 @@ public class TaskAgent extends EnhancedAgent
 		m_taskDatabaseManager = new TaskDatabaseManager();
 		m_taskCommunicator = new TaskCommunicator(this);
 		
-		loggedIn = TeamType.noTeam;
+		m_loggedIn = TeamType.noTeam;
 	}
 	
 	/*******************************  Member Variables   ****************************************/
 	
+	/**
+	 * A list of all requests currently in progress, each one being managed by  asingle request manager
+	 */
 	private ArrayList<RequestManager> m_requestsInProgress;
 	
+	/**
+	 * Communicates with the other agents
+	 */
 	private TaskCommunicator m_taskCommunicator;
 	
+	/**
+	 * Manages the database
+	 */
 	private TaskDatabaseManager m_taskDatabaseManager;
 	
 	/**
 	 * The current team that is logged into the system. 
 	 * ASSUMPTION: we will only have a single UI instance that is always running for MVP.
 	 */
-	private TeamType loggedIn;
+	private TeamType m_loggedIn;
 	
 	/**
 	 * Serial ID for the class
@@ -40,13 +53,13 @@ public class TaskAgent extends EnhancedAgent
 	
 	public void requestSubmitted(RequestInfoModel requestInfo) 
 	{
-		RequestManager manager = new RequestManager(loggedIn, requestInfo, m_taskCommunicator, m_taskDatabaseManager);
+		RequestManager manager = new RequestManager(m_loggedIn, requestInfo, m_taskCommunicator, m_taskDatabaseManager);
 		m_requestsInProgress.add(manager);
 	}
 	
 	public void userLogon(TeamType team) 
 	{
-		loggedIn = team;
+		m_loggedIn = team;
 		Iterator<RequestManager> requestManagers = m_requestsInProgress.iterator();
 		
 		while(requestManagers.hasNext())
@@ -54,24 +67,56 @@ public class TaskAgent extends EnhancedAgent
 			requestManagers.next().userLoggon(team);
 		}
 	}
-	
-	public void requestValidated(int requestID) 
-	{
-		
-	}
-	
+
 	public void requestDenied(int requestID) 
 	{
-		
+		// TODO send notification 
+		// TODO remove request
 	}
 	
 	public void trainingComplete(TrainingData trainingData) 
 	{
-		
+		Iterator<RequestManager> requestManagers = m_requestsInProgress.iterator();
+		while(requestManagers.hasNext())
+		{
+			RequestManager manager = requestManagers.next();
+			
+			if (manager.getRequestInfo().requestorName == trainingData.traineeName)
+			{
+				manager.trainingComplete(trainingData.trainingID);
+			}
+		}
 	}
 	
 	public void taskComplete(TaskModel completedTask)
 	{
+		Iterator<RequestManager> requestManagers = m_requestsInProgress.iterator();
+		int requestID = completedTask.requestInfo.requestID;
+		boolean requestFound = false;
 		
+		while(requestManagers.hasNext())
+		{
+			RequestManager manager = requestManagers.next();
+			
+			if(manager.getRequestInfo().requestID == requestID)
+			{
+				manager.taskComplete(completedTask);
+				requestFound = true;
+				break;
+			}
+		}
+		
+		if(!requestFound)
+		{
+			System.err.println("ERROR - Could not find request for that this task belongs to");
+		}
 	}
 }
+
+
+
+
+
+
+
+
