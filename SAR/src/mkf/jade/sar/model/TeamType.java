@@ -1,5 +1,10 @@
 package mkf.jade.sar.model;
 
+/**
+ * Teams that can login to and use the system
+ * @author Rohit
+ *
+ */
 public enum TeamType 
 {
 	noTeam,		// default value, used to indicate no one is logged in

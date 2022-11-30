@@ -1,10 +1,21 @@
 package mkf.jade.sar.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TaskModel 
+/**
+ * Model class for tasks assigned to teams
+ * @author Rohit
+ *
+ */
+public class TaskModel implements Serializable
 {
+	/**
+	 * Serialization ID
+	 */
+	private static final long serialVersionUID = -7970887106705850666L;
+
 	public TaskModel(TeamType team, String teamContact, RequestInfoModel requestInfo, ArrayList<TaskItemModel> taskItems)
 	{
 		taskID = idOffset++;
@@ -15,6 +26,10 @@ public class TaskModel
 		isComplete = false;
 	}
 	
+	/**
+	 * Used to create unique IDs. Assuming the task agent will not crash or be restarted no request data is stored between different 
+	 * runtimes. Because of this the static variable will work
+	 */
 	private static int idOffset = 0; 
 	
 	public int taskID;
@@ -24,8 +39,10 @@ public class TaskModel
 	public ArrayList<TaskItemModel> taskItems;
 	public boolean isComplete;
 	
-	
-	public void UpdateIsComplete()
+	/**
+	 * Updates the isComplete member with the and'd product of all task items
+	 */
+	public void updateIsComplete()
 	{
 		// Only update the taskItems in this method if there are task items
 		if(taskItems.size() > 0)

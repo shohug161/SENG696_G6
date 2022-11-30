@@ -6,6 +6,7 @@ import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.MessageTemplate;
 import mkf.jade.sar.model.*;
+import mkf.jade.sar.view.*;
 import jade.lang.acl.ACLMessage;
 
 // TODO
@@ -17,7 +18,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 
 	public ViewController m_viewController;
 	public RequestInfoModel rim;
-	public UI gui;
+	public UserInterface gui;
 	
 	public UserInterfaceAgent() {
 		System.out.printf("Hello! My name is %s%n", getLocalName());
@@ -39,6 +40,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		public UserInterfaceCommunicator() {
 			super(UserInterfaceAgent.this);
 			uiAgent = UserInterfaceAgent.this;
+			uiAgent.gui = new UserInterface("Software Acquisition Request System");
 		}
 		
 		
@@ -57,12 +59,17 @@ public class UserInterfaceAgent extends EnhancedAgent {
 			switch(actionCounter) {
 			
 			case 0:
-				// display UI to user ??
+				// waiting for the user to submit a SAR
+				// display the UI to the user to submit a request
+				if (uiAgent.gui.submittedSAR == true) {
+					actionCounter++;
+					uiAgent.rim = uiAgent.gui.getRequestInfoModel();
+				}
 				
 			case 1:
 				// send message to task agent
 				msg = new ACLMessage(ACLMessage.INFORM);
-				msg.setConversationId(Constants.REQUEST);
+				msg.setConversationId(Constants.SUBMIT_REQUEST);
 				try {
 					msg.setContentObject((Serializable) uiAgent.rim);
 				} catch (IOException e) {
@@ -71,11 +78,12 @@ public class UserInterfaceAgent extends EnhancedAgent {
 				}
 				uiAgent.send(msg);
 				actionCounter++;
+				
 			case 2:
 				// listening for request from task agent
 		        template = MessageTemplate.and(
 		                  MessageTemplate.MatchPerformative(ACLMessage.REQUEST),		// players only responding with accept proposal, specify that
-		                  MessageTemplate.MatchConversationId(Constants.REQUEST));				// players will respond with a request
+		                  MessageTemplate.MatchConversationId(Constants.SUBMIT_REQUEST));				// players will respond with a request
 		        msg = myAgent.blockingReceive(template);
 		        // display info on the GUI
 		        // continue listening until we receive an update from the stakeholders
@@ -91,24 +99,5 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		
 	}
 	
-	// make GUI
-	
-	// make request
-	public class ViewController {
-		
-		public RequestInfoModel m_requestInfoModel;
-		
-		public ViewController() {	}
-		
-		public ViewController(RequestInfoModel rim) {
-			m_requestInfoModel = rim;
-		}
-		
-	}
-	
-	public class UI {
-		
-		
-	}
-	
+
 }
