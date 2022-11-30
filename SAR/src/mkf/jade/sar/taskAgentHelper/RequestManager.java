@@ -99,7 +99,8 @@ public class RequestManager
 		{
 			checkLatterTaskProgression();
 		}
-		// TODO CANCEL REMINDER - NICE TO HAVE
+		
+		cancelReminders(completedTask);
 	}
 
 	/**
@@ -147,8 +148,7 @@ public class RequestManager
 	 */
 	public void cancelReminders()
 	{
-		// TODO Send Cancel task reminder - this is a NICE TO HAVE feature
-		
+		cancelReminders(false, m_requestModel.requestTasks);
 	}
 	
 	/******************************* HELPER METHODS   ****************************************/
@@ -275,6 +275,67 @@ public class RequestManager
 			allComplete = allComplete && localTask.isComplete;
 		}
 		return allComplete;
+	}
+	
+	/**
+	 * Cancels the reminders for completed task items for a single task
+	 * @param task The task to cancel the reminders for
+	 */
+	private void cancelReminders(TaskModel task)
+	{
+		ArrayList<TaskModel> taskList = new ArrayList<TaskModel> ();
+		taskList.add(task);
+		cancelReminders(true, taskList);
+	}
+	
+	/**
+	 * Cancels the reminders for all tasks that match remove complete
+	 * @param removeCompleted True if we want to cancel for completed tasks, false for incompleted ones
+	 * @param tasks The tasks to cancel the reminders for
+	 */
+	private void cancelReminders(boolean removeCompleted, ArrayList<TaskModel> tasks) 
+	{
+		ArrayList<Integer> remindersToCancelList = new ArrayList<Integer>();
+		
+		for(int i = 0; i < tasks.size(); i++)
+		{
+			addCompletedItemsToList(removeCompleted, remindersToCancelList, tasks.get(i).taskItems);
+		}
+		
+		// Convert array list<Integer> to int[]
+		int length = remindersToCancelList.size();
+		int[] remindersToCancelArray = new int [length];
+		
+		for(int i = 0; i < length; i++)
+		{
+			remindersToCancelArray[i] = remindersToCancelList.get(i);
+		}
+		
+		m_taskAgent.cancelReminder(remindersToCancelArray);
+	}
+
+	/**
+	 * Adds task items who's completion matchs removeCompleted to the remindersToCancelList list
+	 * @param removeCompleted True if we want to cancel for completed tasks, false for incompleted ones
+	 * @param remindersToCancelList The list to add task item IDs to if they match
+	 * @param taskItems The task items to check
+	 */
+	private void addCompletedItemsToList(boolean removeCompleted,
+										 ArrayList<Integer> remindersToCancelList, 
+										 ArrayList<TaskItemModel> taskItems) 
+	{
+		Iterator<TaskItemModel> itemIterator = taskItems.iterator();
+
+		// Collect all completed task items
+		while(itemIterator.hasNext())
+		{
+			TaskItemModel item = itemIterator.next();
+			
+			if(item.isComplete == removeCompleted)
+			{
+				remindersToCancelList.add(item.taskItemID);
+			}
+		}
 	}
 	
 	/**
