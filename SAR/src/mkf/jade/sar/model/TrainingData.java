@@ -9,6 +9,12 @@ import java.io.Serializable;
  */
 public class TrainingData implements Serializable
 {
+	public TrainingData(int trainingID, String traineeName)
+	{
+		this.trainingID = trainingID;
+		this.traineeName = traineeName;
+	}
+	
 	/**
 	 * Serialization ID
 	 */

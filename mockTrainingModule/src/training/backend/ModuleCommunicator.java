@@ -20,7 +20,6 @@ public class ModuleCommunicator extends Thread
 	{
 		m_controller = controller;
 		
-		m_port = 4141;
 		m_keepRunning = true;
 		try 
 		{
@@ -53,7 +52,7 @@ public class ModuleCommunicator extends Thread
 	/**
 	 * The local port to open the training module on
 	 */
-	private static int m_port;
+	private final int m_port = 4141;
 	
 	/**
 	 * Object used to wait for the training to be completed
