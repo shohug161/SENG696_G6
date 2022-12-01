@@ -1,33 +1,59 @@
 package mkf.jade.sar;
 
-import jade.domain.FIPAException;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.SearchConstraints;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import java.util.Set;
-import java.util.HashSet;
-import jade.core.Agent;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.core.AID;
+import java.io.IOException;
 
+import jade.lang.acl.ACLMessage;
+import mkf.jade.sar.model.TrainingData;
+import mkf.jade.sar.trainingAgentHelper.TrainingAgentBehaviour;
 
-public class TrainingAgent extends EnhancedAgent {
-
-	public class TrainingCommunicator extends SimpleBehaviour {
-		
-		public void action() {
-			
-		}
-		
-		public boolean done() {
-			return false;
-		}
-		
+/**
+ * Bridges other agents of the system with the existing training module system
+ * @author Rohit
+ *
+ */
+public class TrainingAgent extends EnhancedAgent 
+{
+	public TrainingAgent()
+	{
+		addBehaviour(new TrainingAgentBehaviour(this));
 	}
 	
-	public class TrainingDatabaseManager {
+	/*******************************  Member Variables   ************************************/
+
+	/**
+	 * The serilization ID
+	 */
+	private static final long serialVersionUID = -3502765383161725840L;
+	
+	/*******************************  Methods   ****************************************/
+	
+	/**
+	 * Enables training for a user with the following name
+	 * @param traineeName The trainee name
+	 */
+	public void enableTraining(String traineeName)
+	{
+		// TODO send message to training Module
 		
+		// TODO start listening for a response
+	}
+	
+	/*******************************  Helper Methods   ****************************************/
+
+	private void sendCompletedTraining(TrainingData trainingData)
+	{
+		ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+		message.setConversationId(Constants.TRAINING_COMPLETE);
+		
+		try 
+		{
+			message.setContentObject(trainingData);
+			send(message);
+		} 
+		catch (IOException e) 
+		{
+			System.err.println("Could not serialize training data: " + e.getMessage());
+		}
 	}
 	
 }
