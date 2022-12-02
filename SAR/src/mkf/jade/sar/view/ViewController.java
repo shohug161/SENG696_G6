@@ -12,10 +12,23 @@ public class ViewController {
 	
 	public ViewController() 
 	{
+		loginUI = new LoginView("Login", this);
+		requestUI = new NewRequestView(this);
+		taskUI = new TaskChecklistView(this);
+	}
+	
+	public void displayLoginInfo()
+	{
+		loginUI.displayLoginWindow();
+	}
+	
+	
+	public void displayRequestInfo(RequestModel rm)
+	{
 		
 	}
 	
-	public void displayRequestInfo(RequestModel rm)
+	public void getRequestInfo(String team)
 	{
 		
 	}
@@ -24,4 +37,16 @@ public class ViewController {
 	{
 		
 	}
+	
+	public void userLogon(String teamName)
+	{
+		
+	}
+	
+	public void createNewRequest()
+	{
+		requestUI.newRequest();
+	}
+	
+	
 }
