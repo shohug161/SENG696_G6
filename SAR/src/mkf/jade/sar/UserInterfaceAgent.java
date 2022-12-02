@@ -99,5 +99,8 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		
 	}
 	
+	/*******************************  METHODS   ****************************************/
+
+	
 
 }
