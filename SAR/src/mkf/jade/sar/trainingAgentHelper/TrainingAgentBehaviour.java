@@ -1,6 +1,6 @@
 package mkf.jade.sar.trainingAgentHelper;
 
-import jade.core.behaviours.SimpleBehaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import mkf.jade.sar.Constants;
@@ -11,7 +11,7 @@ import mkf.jade.sar.TrainingAgent;
  * @author Rohit
  *
  */
-public class TrainingAgentBehaviour extends SimpleBehaviour
+public class TrainingAgentBehaviour extends CyclicBehaviour
 {
 
 	public TrainingAgentBehaviour(TrainingAgent trainingAgent)
@@ -54,7 +54,7 @@ public class TrainingAgentBehaviour extends SimpleBehaviour
 			try
 			{
 				String traineeName = (String)message.getContentObject();
-				m_trainingAgent.enableTraining(traineeName);
+				m_trainingAgent.enableTraining(traineeName, message.getSender());
 			}
 			catch (Exception e)
 			{
@@ -62,14 +62,4 @@ public class TrainingAgentBehaviour extends SimpleBehaviour
 			}
 		}
 	}
-
-	/**
-	 * Deterimines when the behaviour is complete, which is never for this bahaviour
-	 */
-	@Override
-	public boolean done() 
-	{
-		return false;
-	}
-
 }

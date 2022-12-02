@@ -2,12 +2,15 @@ package mkf.jade.sar;
 
 import java.util.Iterator;
 
+import jade.core.AID;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import mkf.jade.sar.model.*;
 import mkf.jade.sar.taskAgentHelper.*;
 
@@ -21,19 +24,25 @@ import mkf.jade.sar.taskAgentHelper.*;
 public class TaskAgent extends EnhancedAgent 
 {
 	
-	public TaskAgent()
+	/**
+	 * Sets up the agent
+	 */
+	@Override 
+	protected void setup() 
 	{
+		registerAgent();
+		
 		m_requestsInProgress = new ArrayList<RequestManager>();
 		m_taskDatabaseManager = new TaskDatabaseManager();
 		
 		m_loggedIn = TeamType.noTeam;
+				
+		addBehaviour(new TaskAgentBehaviour(this));
 		
-		addBehaviour(new RequestDeniedBehaviour(this));
-		addBehaviour(new RequestSubmittedBehaviour(this));
-		addBehaviour(new TaskCompleteBehaviour(this));
-		addBehaviour(new TrainingCompleteBehaviour(this));
-		addBehaviour(new UserLogonBehaviour(this));
-	}
+		
+		// TODO remove TEST CODE
+		//enableTraining("Frank");
+	}	
 	
 	/*******************************  Member Variables   ****************************************/
 	
@@ -52,6 +61,12 @@ public class TaskAgent extends EnhancedAgent
 	 * ASSUMPTION: we will only have a single UI instance that is always running for MVP.
 	 */
 	private TeamType m_loggedIn;
+	
+	/**
+	 * The AID of the current UI agent that sent the loggon message
+	 * ASSUMPTION: As above we start with only supporting a single UI instance
+	 */
+	private AID m_loggedInUIAgent;
 	
 	/**
 	 * Serial ID for the class
@@ -74,8 +89,9 @@ public class TaskAgent extends EnhancedAgent
 	 * Informs all managers that a new team logged on so they can send that user interface agent the tasks
 	 * @param team The team that is logged on
 	 */
-	public void userLogon(TeamType team) 
+	public void userLogon(TeamType team, AID uiAgent) 
 	{
+		m_loggedInUIAgent = uiAgent;
 		m_loggedIn = team;
 		Iterator<RequestManager> requestManagers = m_requestsInProgress.iterator();
 		
@@ -91,6 +107,8 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void trainingComplete(TrainingData trainingData) 
 	{
+		System.out.println("Training complete for " + trainingData.traineeName);
+		
 		Iterator<RequestManager> requestManagers = m_requestsInProgress.iterator();
 		while(requestManagers.hasNext())
 		{
@@ -152,6 +170,7 @@ public class TaskAgent extends EnhancedAgent
 		
 		if(deniedManager != null)
 		{
+			cancelRequest(requestID);
 			System.out.println("Denied request with the requestID: " + requestID);
 		}
 		else
@@ -170,7 +189,7 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void sendTaskToUI(TaskModel task)
 	{
-		sendMessage(false, Constants.SEND_TASK_TO_UI, task);
+		sendMessage(false, Constants.SEND_TASK_TO_UI, task, m_loggedInUIAgent);
 	}
 	
 	/**
@@ -179,7 +198,8 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void sendNotification(TaskModel task)
 	{
-		sendMessage(true, Constants.NOTIFICATION, task);
+		AID recipient = searchForAgent(Constants.NOTIFICATION_AGENT);
+		sendMessage(true, Constants.NOTIFICATION, task, recipient);
 	}
 	
 	/**
@@ -188,7 +208,8 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void enableTraining(String requestorName)
 	{
-		sendMessage(true, Constants.ENABLE_TRAINING, requestorName);
+		AID recipient = searchForAgent(Constants.TRAINING_AGENT);
+		sendMessage(true, Constants.ENABLE_TRAINING, requestorName, recipient);
 	}
 	
 	/**
@@ -197,7 +218,8 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void notifyVendor(RequestInfoModel request)
 	{
-		sendMessage(true, Constants.NOTIFY_VENDOR, request);
+		AID recipient = searchForAgent(Constants.NOTIFICATION_AGENT);
+		sendMessage(true, Constants.NOTIFY_VENDOR, request, recipient);
 	}
 	
 	/**
@@ -206,7 +228,8 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void scheduleSoftwareInstall(RequestInfoModel request)
 	{
-		sendMessage(true, Constants.SCHEDULE_INSTALL, request);
+		AID recipient = searchForAgent(Constants.SCHEDULER_AGENT);
+		sendMessage(true, Constants.SCHEDULE_INSTALL, request, recipient);
 	}
 	
 	/**
@@ -215,8 +238,31 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void requestComplete(RequestInfoModel request)
 	{
-		sendMessage(true, Constants.REQUEST_COMPLETE, request);		
+		AID recipient = searchForAgent(Constants.NOTIFICATION_AGENT);
+		sendMessage(true, Constants.REQUEST_COMPLETE, request, recipient);		
 		removeRequest(request.requestID);
+	}
+	
+	/**
+	 * Cancels the request for all agents
+	 * @param requestID The request that's been canceled
+	 */
+	private void cancelRequest(int requestID)
+	{
+		AID notificationAgent = searchForAgent(Constants.NOTIFICATION_AGENT);
+		AID[] uiAgents =  searchForAllAgents(Constants.SEND_TASK_TO_UI);
+		
+		int length = uiAgents.length;
+		
+		AID[] recipients = new AID[length + 1];
+		
+		for(int i = 0; i < length; i++)
+		{
+			recipients[i] = uiAgents[i];
+		}
+		recipients[length] = notificationAgent;
+
+		sendMessage(false, Constants.REQUEST_CANCELED, requestID, recipients);
 	}
 	
 	/**
@@ -226,7 +272,8 @@ public class TaskAgent extends EnhancedAgent
 	public void cancelReminder(int[] reminders)
 	{
 		// TODO Reminders not yet implemented - NICE TO HAVE FEATURE
-		// sendMessage(true, Constants.CANCEL_REMINDER, reminders);
+//		 AID recipient = searchForAgent(Constants.SCHEDULER_AGENT);
+//		 sendMessage(true, Constants.CANCEL_REMINDER, reminders, recipient);
 	}
 	
 	/*******************************  Helper METHODS   *************************************/
@@ -236,12 +283,32 @@ public class TaskAgent extends EnhancedAgent
 	 * @param isRequest True if the performative is REQUEST, false if it is INFORM
 	 * @param conversationID The identifyer of the message type
 	 * @param payload The payload of the message
+	 * @param recipient The recipients of the message
 	 */
-	private void sendMessage(boolean isRequest, String conversationID, Serializable payload)
+	private void sendMessage(boolean isRequest, String conversationID, Serializable payload, AID recipient)
+	{
+		AID[] recipients =  { recipient };
+		sendMessage(isRequest, conversationID, payload, recipients);
+	}
+
+	
+	/**
+	 * Sends a message to other agents
+	 * @param isRequest True if the performative is REQUEST, false if it is INFORM
+	 * @param conversationID The identifyer of the message type
+	 * @param payload The payload of the message
+	 * @param recipient An array of all recipients of the message
+	 */
+	private void sendMessage(boolean isRequest, String conversationID, Serializable payload, AID[] recipients)
 	{
 		int performative = isRequest ? ACLMessage.REQUEST : ACLMessage.INFORM;
 		ACLMessage msg = new ACLMessage(performative);
 		msg.setConversationId(conversationID);
+		
+		for(int i = 0; i < recipients.length; i++)
+		{
+			msg.addReceiver(recipients[i]);			
+		}
 		
 		try 
 		{
@@ -252,6 +319,70 @@ public class TaskAgent extends EnhancedAgent
 			System.err.println("Error Serializing type " + payload.getClass() + " " + e.getMessage());
 		}
 		send(msg);
+	}
+	
+	/**
+	 * Searches for an agent that meets the description
+	 * @param description A description of the required services 
+	 * @return Null if none are found, otherwise the first agent found
+	 */
+	private AID searchForAgent(String description)
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+        ServiceDescription sd  = new ServiceDescription();
+        sd.setType(description);
+        dfd.addServices(sd);
+        
+        AID aid = null;
+        
+        try 
+        {
+			DFAgentDescription[] result = DFService.search(this, dfd);
+			
+			if(result.length <= 0) throw new Exception("No Agent found for description: " + description);
+			
+			aid = result[0].getName();
+		} 
+        catch (Exception e) 
+        {
+			e.printStackTrace();
+		}
+        
+        return aid;
+	}
+	
+	/**
+	 * Search for all agents matching the description
+	 * @param description The description of the agents
+	 * @return The AIDs of all agents matching the description
+	 */
+	private AID[] searchForAllAgents(String description)
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+        ServiceDescription sd  = new ServiceDescription();
+        sd.setType(description);
+        dfd.addServices(sd);
+        
+        AID[] recipients;
+        
+        try 
+        {
+        	DFAgentDescription[] result = DFService.search(this, dfd);
+			
+			if(result.length <= 0) throw new Exception("No Agent found for description: " + description);
+			
+			recipients = new AID[result.length];
+			for (int i = 0; i < result.length; i++)
+			{
+				recipients[i] = result[i].getName();
+			}
+		} 
+        catch (Exception e) 
+        {
+			e.printStackTrace();
+			recipients = new AID[0];
+		}
+        return recipients;
 	}
 	
 	/**
@@ -279,5 +410,28 @@ public class TaskAgent extends EnhancedAgent
 		{
 			System.err.println("ERROR - Could not remove request ID: " + requestID + " because it was not found");
 		}
+	}
+	
+	/**
+	 * Registers this agent in the DF
+	 */
+	private void registerAgent()
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType(Constants.TASK_AGENT);
+        sd.setName(getLocalName());
+		
+        dfd.setName(getAID());  
+        dfd.addServices(sd);
+        
+        try 
+        {  
+            DFService.register(this, dfd);  
+        }
+        catch (FIPAException fe) 
+        {
+            fe.printStackTrace(); 
+        }
 	}
 }

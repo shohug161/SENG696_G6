@@ -1,14 +1,17 @@
 package mkf.jade.sar;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.util.Hashtable;
 
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.*;
+import jade.domain.FIPAException;
+import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import mkf.jade.sar.model.TrainingData;
 import mkf.jade.sar.trainingAgentHelper.TrainingAgentBehaviour;
+import mkf.jade.sar.trainingAgentHelper.TrainingCommunicationThread;
+import mkf.jade.sar.trainingAgentHelper.TrainingDatabaseManager;
 
 /**
  * Bridges other agents of the system with the existing training module system
@@ -17,8 +20,16 @@ import mkf.jade.sar.trainingAgentHelper.TrainingAgentBehaviour;
  */
 public class TrainingAgent extends EnhancedAgent 
 {
-	public TrainingAgent()
+	/**
+	 * Sets up the agent
+	 */
+	@Override 
+	protected void setup()
 	{
+		registerAgent();
+		m_trainingDatabaseManager = new TrainingDatabaseManager();
+		m_nameToAIDMap = new Hashtable<String, AID>();
+		
 		addBehaviour(new TrainingAgentBehaviour(this));
 	}
 	
@@ -30,63 +41,43 @@ public class TrainingAgent extends EnhancedAgent
 	private static final long serialVersionUID = -3502765383161725840L;
 	
 	/**
-	 * The port of the system
+	 * Manages the database for the training agent
 	 */
-	private final int port = 4141;
+	private TrainingDatabaseManager m_trainingDatabaseManager;
+	
+	/**
+	 * Table for mapping traineee names to the AID who requested the training
+	 */
+	private Hashtable <String, AID> m_nameToAIDMap;
 	
 	/*******************************  Methods   ****************************************/
 	
 	/**
 	 * Enables training for a user with the following name
 	 * @param traineeName The trainee name
+	 * @param aid The agent ID of the sender of this message
 	 */
-	public void enableTraining(String traineeName)
+	public void enableTraining(String traineeName, AID aid)
 	{
-		//TODO make this into its own thread?
+		m_nameToAIDMap.put(traineeName, aid);
+		TrainingCommunicationThread thread = new TrainingCommunicationThread(traineeName, this);
 		
-		Socket socket = connectToTrainingModule();
-		
-		if(socket != null)
-		{
-			try
-			{
-				PrintWriter writer = new PrintWriter(socket.getOutputStream());
-				writer.println(traineeName);
-				
-				System.out.println("Sent enable training message to training module");
-				
-				BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-				String readName = reader.readLine();
-				String readID = reader.readLine();
-				
-				int trainingID = Integer.parseInt(readID);
-				
-				sendCompletedTraining(new TrainingData(trainingID, readName));
-			}
-			catch(IOException e)
-			{
-				System.err.println("ERROR - Failed writing or reading to the training module socket" + e.getMessage());
-			}
-			catch(NumberFormatException e)
-			{
-				System.err.println("ERROR - Failed to parse the training ID that the training module sent" + e.getMessage());
-			}
-			
-			
-		}		
+		thread.start();
 	}
 	
-	/*******************************  Helper Methods   ****************************************/
-
 	/**
 	 * Sends the completed training data to the other agents
 	 * @param trainingData The training data to send
 	 */
-	private void sendCompletedTraining(TrainingData trainingData)
+	public void sendCompletedTraining(TrainingData trainingData)
 	{
 		ACLMessage message = new ACLMessage(ACLMessage.INFORM);
 		message.setConversationId(Constants.TRAINING_COMPLETE);
+		message.addReceiver(m_nameToAIDMap.get(trainingData.traineeName));
+		
+		m_nameToAIDMap.remove(trainingData.traineeName);
+		
+		m_trainingDatabaseManager.updateTrainingStatus(trainingData);
 		
 		try 
 		{
@@ -100,35 +91,28 @@ public class TrainingAgent extends EnhancedAgent
 		}
 	}
 	
+	/*******************************  Helper Methods   ****************************************/
+
 	/**
-	 * Connects to the training module socket, tries until successful 
-	 * @return A socket connected to the training module
+	 * Registers this agent in the DF
 	 */
-	private Socket connectToTrainingModule() {
-		Socket socket = null;
-		boolean connected = false;
-		do
-		{
-			try
-			{
-				socket = new Socket("localhost", port);
-				connected = true;
-			}
-			catch(IOException e)
-			{
-				System.out.println("Failed to connect to the training module, retrying in 10 seconds");
-				try 
-				{
-					Thread.sleep(10000);
-				} 
-				catch (InterruptedException e1) 
-				{
-					System.err.println("ERROR - 10 second sleep interrupted");
-				}
-			}
-		}
-		while (!connected);
+	private void registerAgent()
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType(Constants.TRAINING_AGENT);
+        sd.setName(getLocalName());
 		
-		return socket;
+        dfd.setName(getAID());  
+        dfd.addServices(sd);
+        
+        try 
+        {  
+            DFService.register(this, dfd);  
+        }
+        catch (FIPAException fe) 
+        {
+            fe.printStackTrace(); 
+        }
 	}
 }
