@@ -79,7 +79,6 @@ public class ModuleCommunicator extends Thread
 	{
 		System.out.println("Server socket accepting connections on port 4141");
 		
-		// TODO remove?
 		m_controller.enableTraining("Arjuna");
 		m_controller.enableTraining("Kenny");
 		m_controller.enableTraining("Wayn");
@@ -92,8 +91,10 @@ public class ModuleCommunicator extends Thread
 				Socket clientSocket = m_serverSocket.accept();
 
 				BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				String name = reader.readLine();
-				m_controller.enableTraining(name);
+								
+				m_completedTraineeName = reader.readLine();
+				
+				m_controller.enableTraining(m_completedTraineeName);
 				
 				// wait for when the training is complete
 				synchronized(syncObj)
@@ -105,6 +106,7 @@ public class ModuleCommunicator extends Thread
 				
 				writer.println(m_completedTraineeName);
 				writer.println(m_completedTrainingID);
+				writer.flush();
 				
 				writer.close();
 				reader.close();
@@ -129,12 +131,14 @@ public class ModuleCommunicator extends Thread
 	public void trainingComplete(int completedTrainingID, String completedTraineeName)
 	{
 		m_completedTrainingID = completedTrainingID;
-		m_completedTraineeName = completedTraineeName;
-		
-		// Allow thread to proceed
-		synchronized(syncObj)
+				
+		if(m_completedTraineeName.equals(completedTraineeName))
 		{
-			syncObj.notify();			
+			// Allow thread to proceed
+			synchronized(syncObj)
+			{
+				syncObj.notify();			
+			}			
 		}
 	}
 }

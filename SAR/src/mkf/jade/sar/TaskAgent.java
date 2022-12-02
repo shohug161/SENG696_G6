@@ -91,6 +91,8 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void trainingComplete(TrainingData trainingData) 
 	{
+		System.out.println("Training complete for " + trainingData.traineeName);
+		
 		Iterator<RequestManager> requestManagers = m_requestsInProgress.iterator();
 		while(requestManagers.hasNext())
 		{

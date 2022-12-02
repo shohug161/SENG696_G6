@@ -3,6 +3,7 @@ package mkf.jade.sar.taskAgentHelper;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import mkf.jade.sar.TaskAgent;
 
 /**
@@ -59,13 +60,12 @@ public abstract class TaskAgentBehaviourBase extends SimpleBehaviour
 	public void action() 
 	{			
 		ACLMessage received = m_taskAgent.blockingReceive(m_template);
-		
+
 		if(received != null)
 		{
 			try 
 			{
-				int requestID = (int)received.getContentObject();
-				m_taskAgent.requestDenied(requestID);
+				processPayload(received);
 			} 
 			catch (Exception e) 
 			{
