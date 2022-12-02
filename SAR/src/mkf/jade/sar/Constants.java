@@ -13,7 +13,7 @@ public class Constants
 	public static final String REQUEST_DENIED = "denied";				// UI -> Task (int)INFORM
 	
 	public static final String SEND_TASK_TO_UI = "toUI";				// Task -> UI (TaskModel)INFORM
-	public static final String REQUEST_CANCELED = "canceled";			// Task -> UI, Notification (TaskModel)INFORM
+	public static final String REQUEST_CANCELED = "canceled";			// Task -> UI, Notification (int)INFORM
 	
 	public static final String REQUEST_COMPLETE = "requestComplete";	// Task -> Notification (RequestInfoModel)REQUEST 
 	public static final String NOTIFICATION = "notification";			// Task -> Notification (TaskModel)REQUEST - NICE TO HAVE -> also send to scheduler
@@ -26,4 +26,11 @@ public class Constants
 	public static final String CANCEL_REMINDER = "cancelReminder";		// Task -> Scheduler (int)REQUEST - NICE TO HAVE
 	
 	public static final String REMINDER = "reminder";					// Scheduler -> Notification (TaskModel)REQUEST - NICE TO HAVE
+	
+	// AGENT DESCRIPTION
+	public static final String TRAINING_AGENT = "training";
+	public static final String TASK_AGENT = "task";
+	public static final String UI_AGENT = "ui";
+	public static final String NOTIFICATION_AGENT = "notification";
+	public static final String SCHEDULER_AGENT = "scheduler";
 }

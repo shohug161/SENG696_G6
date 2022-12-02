@@ -61,6 +61,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 			case 0:
 				// waiting for the user to submit a SAR
 				// display the UI to the user to submit a request
+				m_viewController.displayLoginInfo();
 				if (uiAgent.gui.submittedSAR == true) {
 					actionCounter++;
 					uiAgent.rim = uiAgent.gui.getRequestInfoModel();
@@ -99,5 +100,32 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		
 	}
 	
+	/*******************************  METHODS   ****************************************/
 
+	
+	
+	public void submitRequest(RequestInfoModel requestInfo)
+	{
+		// TODO
+	}
+	
+	public void userLogon(TeamType team)
+	{
+		// TODO
+	}
+	
+	public void taskComplete(TaskModel task)
+	{
+		// TODO
+	}
+
+	
+	public void reqeuestDenied(int requestID)
+	{
+		// TODO
+	}
+	
+	
+	
+	
 }
