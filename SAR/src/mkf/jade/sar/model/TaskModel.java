@@ -1,5 +1,6 @@
 package mkf.jade.sar.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -8,8 +9,13 @@ import java.util.Iterator;
  * @author Rohit
  *
  */
-public class TaskModel 
+public class TaskModel implements Serializable
 {
+	/**
+	 * Serialization ID
+	 */
+	private static final long serialVersionUID = -7970887106705850666L;
+
 	public TaskModel(TeamType team, String teamContact, RequestInfoModel requestInfo, ArrayList<TaskItemModel> taskItems)
 	{
 		taskID = idOffset++;

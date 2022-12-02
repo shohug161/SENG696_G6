@@ -69,7 +69,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 			case 1:
 				// send message to task agent
 				msg = new ACLMessage(ACLMessage.INFORM);
-				msg.setConversationId(Constants.NOTIFY);
+				msg.setConversationId(Constants.SUBMIT_REQUEST);
 				try {
 					msg.setContentObject((Serializable) uiAgent.rim);
 				} catch (IOException e) {
@@ -83,7 +83,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 				// listening for request from task agent
 		        template = MessageTemplate.and(
 		                  MessageTemplate.MatchPerformative(ACLMessage.REQUEST),		// players only responding with accept proposal, specify that
-		                  MessageTemplate.MatchConversationId(Constants.REQUEST));				// players will respond with a request
+		                  MessageTemplate.MatchConversationId(Constants.SUBMIT_REQUEST));				// players will respond with a request
 		        msg = myAgent.blockingReceive(template);
 		        // display info on the GUI
 		        // continue listening until we receive an update from the stakeholders

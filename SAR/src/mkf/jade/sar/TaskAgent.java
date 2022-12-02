@@ -1,7 +1,13 @@
 package mkf.jade.sar;
 
 import java.util.Iterator;
+
+import jade.lang.acl.ACLMessage;
+
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+
 import mkf.jade.sar.model.*;
 import mkf.jade.sar.taskAgentHelper.*;
 
@@ -19,9 +25,14 @@ public class TaskAgent extends EnhancedAgent
 	{
 		m_requestsInProgress = new ArrayList<RequestManager>();
 		m_taskDatabaseManager = new TaskDatabaseManager();
-		m_taskCommunicator = new TaskCommunicator(this);
 		
 		m_loggedIn = TeamType.noTeam;
+		
+		addBehaviour(new RequestDeniedBehaviour(this));
+		addBehaviour(new RequestSubmittedBehaviour(this));
+		addBehaviour(new TaskCompleteBehaviour(this));
+		addBehaviour(new TrainingCompleteBehaviour(this));
+		addBehaviour(new UserLogonBehaviour(this));
 	}
 	
 	/*******************************  Member Variables   ****************************************/
@@ -30,11 +41,6 @@ public class TaskAgent extends EnhancedAgent
 	 * A list of all requests currently in progress, each one being managed by  asingle request manager
 	 */
 	private ArrayList<RequestManager> m_requestsInProgress;
-	
-	/**
-	 * Communicates with the other agents
-	 */
-	private TaskCommunicator m_taskCommunicator;
 	
 	/**
 	 * Manages the database
@@ -52,7 +58,7 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	private static final long serialVersionUID = 0xef684b9797998749L;
 	
-	/*******************************  METHODS   ****************************************/
+	/*******************************  INCOMING MESSAGE METHODS   ****************************************/
 	
 	/**
 	 * Starts a new request manager for the new request
@@ -60,7 +66,7 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void requestSubmitted(RequestInfoModel requestInfo) 
 	{
-		RequestManager manager = new RequestManager(m_loggedIn, requestInfo, m_taskCommunicator, m_taskDatabaseManager);
+		RequestManager manager = new RequestManager(m_loggedIn, requestInfo, this, m_taskDatabaseManager);
 		m_requestsInProgress.add(manager);
 	}
 	
@@ -146,7 +152,6 @@ public class TaskAgent extends EnhancedAgent
 		
 		if(deniedManager != null)
 		{
-			m_taskCommunicator.requestCanceled(deniedManager.getRequestInfo());
 			System.out.println("Denied request with the requestID: " + requestID);
 		}
 		else
@@ -157,22 +162,98 @@ public class TaskAgent extends EnhancedAgent
 		removeRequest(requestID);
 	}
 	
+	/*******************************  OUTGOING MESSAGE METHODS   *************************************/
+
 	/**
-	 * Removes a request with the request ID. 
-	 * 
-	 * NOTE: the request completion is determined by the request manager. This method is only to stop 
-	 * tracking the request by removing the manager.
-	 * @param requestID The request ID
+	 * Sends a task to the UI agent
+	 * @param task The task to send
 	 */
-	public void requestCompleted(int requestID) 
+	public void sendTaskToUI(TaskModel task)
 	{
-		// Don't send the notification because the task communicator calls this method
-		// Don't log because the request manager does that
-		removeRequest(requestID);
+		sendMessage(false, Constants.SEND_TASK_TO_UI, task);
+	}
+	
+	/**
+	 * Sends a task to the notification agent so it can send a notification
+	 * @param task The task to send
+	 */
+	public void sendNotification(TaskModel task)
+	{
+		sendMessage(true, Constants.NOTIFICATION, task);
+	}
+	
+	/**
+	 * Requests the training agent enables training for the requestor
+	 * @param requestorName The requestor to enable the training for
+	 */
+	public void enableTraining(String requestorName)
+	{
+		sendMessage(true, Constants.ENABLE_TRAINING, requestorName);
+	}
+	
+	/**
+	 * Requests that the notification agent informs the vendor of intent to purchase
+	 * @param request The request to notify the vendor about
+	 */
+	public void notifyVendor(RequestInfoModel request)
+	{
+		sendMessage(true, Constants.NOTIFY_VENDOR, request);
+	}
+	
+	/**
+	 * Requests that the scheduler agent schedule a software isntallation date
+	 * @param request The request to schedule an installation for
+	 */
+	public void scheduleSoftwareInstall(RequestInfoModel request)
+	{
+		sendMessage(true, Constants.SCHEDULE_INSTALL, request);
+	}
+	
+	/**
+	 * Request the notification agent sends a notification that the request is complete
+	 * @param request The request to send the notification for.
+	 */
+	public void requestComplete(RequestInfoModel request)
+	{
+		sendMessage(true, Constants.REQUEST_COMPLETE, request);		
+		removeRequest(request.requestID);
+	}
+	
+	/**
+	 * Requests that the schedular agent cancel all reminders for the task IDs
+	 * @param reminders Array of all task item IDs to cancel the reminders for 
+	 */
+	public void cancelReminder(int[] reminders)
+	{
+		// TODO Reminders not yet implemented - NICE TO HAVE FEATURE
+		// sendMessage(true, Constants.CANCEL_REMINDER, reminders);
 	}
 	
 	/*******************************  Helper METHODS   *************************************/
 
+	/**
+	 * Sends a message to other agents
+	 * @param isRequest True if the performative is REQUEST, false if it is INFORM
+	 * @param conversationID The identifyer of the message type
+	 * @param payload The payload of the message
+	 */
+	private void sendMessage(boolean isRequest, String conversationID, Serializable payload)
+	{
+		int performative = isRequest ? ACLMessage.REQUEST : ACLMessage.INFORM;
+		ACLMessage msg = new ACLMessage(performative);
+		msg.setConversationId(conversationID);
+		
+		try 
+		{
+			msg.setContentObject(payload);
+		} 
+		catch (IOException e) 
+		{
+			System.err.println("Error Serializing type " + payload.getClass() + " " + e.getMessage());
+		}
+		send(msg);
+	}
+	
 	/**
 	 * Removes all request managers with a request matching the ID
 	 * @param requestID The request ID to remove
@@ -186,6 +267,7 @@ public class TaskAgent extends EnhancedAgent
 		{
 			if(m_requestsInProgress.get(i).getRequestInfo().requestID == requestID)
 			{
+				m_requestsInProgress.get(i).cancelReminders();
 				m_requestsInProgress.remove(i);
 				requestFound = true;
 				
@@ -199,11 +281,3 @@ public class TaskAgent extends EnhancedAgent
 		}
 	}
 }
-
-
-
-
-
-
-
-

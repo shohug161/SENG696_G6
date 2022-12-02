@@ -2,6 +2,8 @@ package mkf.jade.sar.taskAgentHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import mkf.jade.sar.TaskAgent;
 import mkf.jade.sar.model.*;
 
 /**
@@ -10,10 +12,10 @@ import mkf.jade.sar.model.*;
  */
 public class RequestManager
 {
-	public RequestManager(TeamType loggedIn, RequestInfoModel requestInfo, TaskCommunicator taskCommunicator, TaskDatabaseManager taskDatabaseManager)
+	public RequestManager(TeamType loggedIn, RequestInfoModel requestInfo, TaskAgent taskCommunicator, TaskDatabaseManager taskDatabaseManager)
 	{
 		this.m_loggedIn = loggedIn;
-		m_taskCommunicator = taskCommunicator;
+		m_taskAgent = taskCommunicator;
 		m_taskDatabaseManager = taskDatabaseManager;
 		m_requestModel = new RequestModel(requestInfo);
 		
@@ -33,9 +35,9 @@ public class RequestManager
 	private TeamType m_loggedIn;
 		
 	/**
-	 * Communicates with other agents
+	 * Communicates with other agents and manages all requests and tasks
 	 */
-	private TaskCommunicator m_taskCommunicator;
+	private TaskAgent m_taskAgent;
 	
 	/**
 	 * Manages the database
@@ -71,7 +73,7 @@ public class RequestManager
 			// send the task to the UI
 			if(!task.isComplete && task.team == team)
 			{
-				m_taskCommunicator.sendTaskToUI(task);
+				m_taskAgent.sendTaskToUI(task);
 			}
 		}
 		
@@ -96,7 +98,9 @@ public class RequestManager
 		if(updateTaskCompletion(completedTask))
 		{
 			checkLatterTaskProgression();
-		}		
+		}
+		
+		cancelReminders(completedTask);
 	}
 
 	/**
@@ -138,6 +142,15 @@ public class RequestManager
 		}
 	}
 	
+	/**
+	 * Cancels the reminders for all tasks in the request
+	 * @param manager The manager that controls all tasks with reminders to be canceled
+	 */
+	public void cancelReminders()
+	{
+		cancelReminders(false, m_requestModel.requestTasks);
+	}
+	
 	/******************************* HELPER METHODS   ****************************************/
 	
 	/**
@@ -157,11 +170,11 @@ public class RequestManager
 			TaskModel task = createTaskModel(team);
 			
 			m_requestModel.requestTasks.add(task);
-			m_taskCommunicator.sendNotification(task);
+			m_taskAgent.sendNotification(task);
 			
 			if(team == m_loggedIn)
 			{
-				m_taskCommunicator.sendTaskToUI(task);
+				m_taskAgent.sendTaskToUI(task);
 			}
 			
 		}
@@ -188,7 +201,7 @@ public class RequestManager
 			if(!m_taskDatabaseManager.getRequestorTraingStatus(requestInfo.requestorName))
 			{
 				createTask(TeamType.requestor);
-				m_taskCommunicator.enableTraining(requestInfo.requestorName);
+				m_taskAgent.enableTraining(requestInfo.requestorName);
 			}
 		}
 	}
@@ -218,11 +231,12 @@ public class RequestManager
 			lastTaskTeam == TeamType.supplyChain ||
 			lastTaskTeam == TeamType.zoneManager)
 		{
-			m_taskCommunicator.notifyVendor(getRequestInfo());
+			m_taskAgent.notifyVendor(getRequestInfo());
 			createTask(TeamType.accountsPayable);
 		}
 		else if (lastTaskTeam == TeamType.accountsPayable)
 		{
+			m_taskAgent.scheduleSoftwareInstall(getRequestInfo());
 			createTask(TeamType.deskside);
 		}
 		else if (lastTaskTeam == TeamType.deskside)
@@ -231,7 +245,7 @@ public class RequestManager
 			System.out.println("Request " + getRequestInfo() + " COMPLETED");
 			
 			m_taskDatabaseManager.addCompletedRequest(getRequestInfo());
-			m_taskCommunicator.requestComplete(getRequestInfo());	// Must be last
+			m_taskAgent.requestComplete(getRequestInfo());	// Must be last
 		}
 		else
 		{
@@ -261,6 +275,67 @@ public class RequestManager
 			allComplete = allComplete && localTask.isComplete;
 		}
 		return allComplete;
+	}
+	
+	/**
+	 * Cancels the reminders for completed task items for a single task
+	 * @param task The task to cancel the reminders for
+	 */
+	private void cancelReminders(TaskModel task)
+	{
+		ArrayList<TaskModel> taskList = new ArrayList<TaskModel> ();
+		taskList.add(task);
+		cancelReminders(true, taskList);
+	}
+	
+	/**
+	 * Cancels the reminders for all tasks that match remove complete
+	 * @param removeCompleted True if we want to cancel for completed tasks, false for incompleted ones
+	 * @param tasks The tasks to cancel the reminders for
+	 */
+	private void cancelReminders(boolean removeCompleted, ArrayList<TaskModel> tasks) 
+	{
+		ArrayList<Integer> remindersToCancelList = new ArrayList<Integer>();
+		
+		for(int i = 0; i < tasks.size(); i++)
+		{
+			addCompletedItemsToList(removeCompleted, remindersToCancelList, tasks.get(i).taskItems);
+		}
+		
+		// Convert array list<Integer> to int[]
+		int length = remindersToCancelList.size();
+		int[] remindersToCancelArray = new int [length];
+		
+		for(int i = 0; i < length; i++)
+		{
+			remindersToCancelArray[i] = remindersToCancelList.get(i);
+		}
+		
+		m_taskAgent.cancelReminder(remindersToCancelArray);
+	}
+
+	/**
+	 * Adds task items who's completion matchs removeCompleted to the remindersToCancelList list
+	 * @param removeCompleted True if we want to cancel for completed tasks, false for incompleted ones
+	 * @param remindersToCancelList The list to add task item IDs to if they match
+	 * @param taskItems The task items to check
+	 */
+	private void addCompletedItemsToList(boolean removeCompleted,
+										 ArrayList<Integer> remindersToCancelList, 
+										 ArrayList<TaskItemModel> taskItems) 
+	{
+		Iterator<TaskItemModel> itemIterator = taskItems.iterator();
+
+		// Collect all completed task items
+		while(itemIterator.hasNext())
+		{
+			TaskItemModel item = itemIterator.next();
+			
+			if(item.isComplete == removeCompleted)
+			{
+				remindersToCancelList.add(item.taskItemID);
+			}
+		}
 	}
 	
 	/**
@@ -318,7 +393,7 @@ public class RequestManager
 				break;
 				
 			case deskside:
-				taskItems.add(new TaskItemModel("Schedule Software Installion Job in the Job Scheduler"));
+				// TODO DO_WE_NEED_THIS? taskItems.add(new TaskItemModel("Schedule Software Installion Job in the Job Scheduler"));
 				taskItems.add(new TaskItemModel("Install the Software or Assist with Installation"));
 				break;
 				

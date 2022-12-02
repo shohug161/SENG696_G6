@@ -1,13 +1,18 @@
 package mkf.jade.sar.model;
 
+import java.io.Serializable;
+
 /**
- * Model class for tasks assigned to teams
+ * Model class for sub tasks assigned to teams
  * @author Rohit
  *
  */
-public class TaskItemModel 
+public class TaskItemModel implements Serializable
 {
-	
+	/**
+	 * Serialization ID
+	 */
+	private static final long serialVersionUID = 9098251527251881984L;
 	
 	public TaskItemModel(String taskItemName)
 	{
