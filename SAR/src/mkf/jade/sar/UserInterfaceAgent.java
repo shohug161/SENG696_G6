@@ -69,7 +69,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 			case 1:
 				// send message to task agent
 				msg = new ACLMessage(ACLMessage.INFORM);
-				msg.setConversationId(Constants.REQUEST);
+				msg.setConversationId(Constants.NOTIFY);
 				try {
 					msg.setContentObject((Serializable) uiAgent.rim);
 				} catch (IOException e) {
@@ -98,6 +98,9 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		}
 		
 	}
+	
+	/*******************************  METHODS   ****************************************/
+
 	
 
 }
