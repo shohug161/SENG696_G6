@@ -183,8 +183,8 @@ public class LoginView extends JFrame {
 	public class sarListener implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+		public void actionPerformed(ActionEvent e) 
+		{
 			m_viewController.createNewRequest();
 			frame.dispose();
 		}
@@ -193,9 +193,8 @@ public class LoginView extends JFrame {
 	public class viewTaskListener implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			
+		public void actionPerformed(ActionEvent e)
+		{
 			m_viewController.getRequestInfo(TeamType.valueOf(team));
 			frame.dispose();
 		}
