@@ -55,6 +55,7 @@ public class RequestInfoModel implements Serializable
 		vendorEmail = vEmail;
 		comments = comm;
 	}
+	
 	/**
 	 * Overriden to String Method
 	 */
