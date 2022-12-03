@@ -71,8 +71,7 @@ public class SelectRequestView extends JFrame {
 		panel.add(chooseButton, BorderLayout.SOUTH);
 
 		panel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
-		
-		
+		setVisible(true);
 	}
 	
 	/*******************************  Methods   ****************************************/

@@ -146,6 +146,7 @@ public class LoginView extends JFrame {
 		error.setBounds(100, 100, 100, 20);
 		error.setForeground(Color.RED);
 		loginPanel.add(error);
+		loginPanel.repaint();
 	}
 	
 	/**

@@ -1,12 +1,18 @@
 package mkf.jade.sar.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.JPanel;
+
 import mkf.jade.sar.model.*;
 
 public class TaskChecklistView {
 
 	private ViewController m_viewController;
-	private ArrayList<TaskItemModel> tasks;
+	private ArrayList<TaskItemModel> taskList;
+	private JPanel request, tasks;
 	
 	public TaskChecklistView(ViewController vc)
 	{
@@ -22,13 +28,19 @@ public class TaskChecklistView {
 	/**
 	 * User has approved one of their assigned tasks. A notification needs to be sent to the Task Agent through the UI Agent.
 	 */
-	public void taskApproved()
+	class SubmitTasks implements ActionListener
 	{
-		
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			// send task list to the view controller to send to UI agent
+			
+		}
 	}
 	
-	public void setTasks(ArrayList<TaskItemModel> taskList)
+	public void setTasks(ArrayList<TaskItemModel> list)
 	{
-		this.tasks = taskList;
+		this.taskList = list;
 	}
 }

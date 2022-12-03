@@ -1,7 +1,9 @@
 package mkf.jade.sar.view;
 
 import mkf.jade.sar.model.*;
+import mkf.jade.sar.taskAgentHelper.RequestManager;
 import mkf.jade.sar.*;
+
 
 public class ViewController {
 	
@@ -11,6 +13,7 @@ public class ViewController {
 	private TaskChecklistView taskUI;
 	private ZoneManagerView zoneManagerUI;
 	private SelectRequestView selectRequestUI;
+	private RequestManager requestManager;
 	
 	public ViewController(UserInterfaceAgent ui) 
 	{
@@ -18,8 +21,6 @@ public class ViewController {
 		loginUI = new LoginView("Login", this);
 		requestUI = new NewRequestView(this);
 		taskUI = new TaskChecklistView(this);
-		selectRequestUI = new SelectRequestView(this);
-		zoneManagerUI = new ZoneManagerView(this);
 	}
 	
 	public void displayLoginInfo()
@@ -36,12 +37,34 @@ public class ViewController {
 		// TODO
 		// get a list of requests for the team
 		
-		selectRequestUI.setVisible(true);
+		selectRequestUI = new SelectRequestView(this);
 	}
 	
-	public void getRequestInfo(TeamType team)
+	public void getRequestInfo(TeamType team, RequestInfoModel rm)
 	{
-		//
+		// TODO
+		// display zone manager view for zone manager or else tasks for other users
+		if (team.equals(TeamType.valueOf("zoneManager")))
+		{
+			zoneManagerReview(rm);
+		}
+		else {
+			// TODO
+			// task checklist view for other users
+		}
+	}
+	
+	public void zoneManagerReview(RequestInfoModel rm)
+	{
+		zoneManagerUI = new ZoneManagerView(this, rm);
+		zoneManagerUI.display();
+	}
+	
+	public void zoneManagerApproval(RequestInfoModel rm)
+	{
+		// make a new task model
+		// TaskModel tm = RequestManager.createTaskModel(TeamType.valueOf("zoneManager"));
+		
 	}
 	
 	public void addTaskToSelection(TaskModel task)
