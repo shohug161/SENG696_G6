@@ -2,9 +2,15 @@ package mkf.jade.sar;
 
 import java.io.IOException;
 import java.io.Serializable;
-import jade.core.Agent;
-import jade.core.behaviours.SimpleBehaviour;
+
+import jade.core.AID;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import mkf.jade.sar.model.*;
 import mkf.jade.sar.view.*;
 import jade.lang.acl.ACLMessage;
@@ -16,116 +22,222 @@ import jade.lang.acl.ACLMessage;
 // conversation ID creates a unique conversation with your agents
 public class UserInterfaceAgent extends EnhancedAgent {
 
+	private static final long serialVersionUID = 8340628674987619684L;
+	private AID m_taskAgentID;
 	public ViewController m_viewController;
 	public RequestInfoModel rim;
 	public UserInterface gui;
 	
-	public UserInterfaceAgent() {
-		System.out.printf("Hello! My name is %s%n", getLocalName());
+	/**
+	 * Sets up this agent
+	 */
+	@Override
+	protected void setup()
+	{
+		registerAgent();
+		
 		addBehaviour(new UserInterfaceCommunicator());
 		m_viewController = new ViewController();
+		
+		gui = new UserInterface("Software Acquisition Request System");
 	}
 	
-	// TODO create UI for the user to input
-	// switch case for each agent??
-	// receive messages fromt task agent
-	// send messages to task agent
-	// use setContent() to set the content of the message
-	public class UserInterfaceCommunicator extends SimpleBehaviour {
+	
+	/**
+	 * Receives messages from the other agents
+	 * @author Desi
+	 *
+	 */
+	private class UserInterfaceCommunicator extends CyclicBehaviour {
 
-		private UserInterfaceAgent uiAgent;
-		private boolean done = false;
-		private short actionCounter = 0;
+		private static final long serialVersionUID = 2775022485827203862L;
+		private UserInterfaceAgent m_uiAgent;
+		private MessageTemplate m_receivedTask;
+		private MessageTemplate m_requestCanceled;
 		
 		public UserInterfaceCommunicator() {
 			super(UserInterfaceAgent.this);
-			uiAgent = UserInterfaceAgent.this;
-			uiAgent.gui = new UserInterface("Software Acquisition Request System");
+			m_uiAgent = UserInterfaceAgent.this;
+			
+			m_receivedTask = MessageTemplate.and(
+	                  			MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+	                  			MessageTemplate.MatchConversationId(Constants.SEND_TASK_TO_UI));
+			
+			m_requestCanceled = MessageTemplate.and(
+          							MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+          							MessageTemplate.MatchConversationId(Constants.REQUEST_CANCELED));
 		}
 		
-		
+		/**
+		 * Process all possible incoming messages
+		 */
 		@Override
 		public void action() {
-			// TODO Auto-generated method stub
-			// cases:
-			// sending message with a new request
-			// request approved
-			// request cancelled
-			// new request
+
+			m_viewController.displayLoginInfo();
+			ACLMessage receivedTaskMsg = m_uiAgent.receive(m_receivedTask);
+			ACLMessage requestCanceledMsg = m_uiAgent.receive(m_requestCanceled);
 			
-			ACLMessage msg, reply;
-			MessageTemplate template;
+			boolean noMsgReceived = true;
 			
-			switch(actionCounter) {
-			
-			case 0:
-				// waiting for the user to submit a SAR
-				// display the UI to the user to submit a request
-				m_viewController.displayLoginInfo();
-				if (uiAgent.gui.submittedSAR == true) {
-					actionCounter++;
-					uiAgent.rim = uiAgent.gui.getRequestInfoModel();
-				}
+			if(receivedTaskMsg != null){
 				
-			case 1:
-				// send message to task agent
-				msg = new ACLMessage(ACLMessage.INFORM);
-				msg.setConversationId(Constants.SUBMIT_REQUEST);
 				try {
-					msg.setContentObject((Serializable) uiAgent.rim);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					TaskModel task = (TaskModel)receivedTaskMsg.getContentObject();
+					m_uiAgent.receivedTask(task);
+					
+				} catch (UnreadableException e) {
 					e.printStackTrace();
 				}
-				uiAgent.send(msg);
-				actionCounter++;
-				
-			case 2:
-				// listening for request from task agent
-		        template = MessageTemplate.and(
-		                  MessageTemplate.MatchPerformative(ACLMessage.REQUEST),		// players only responding with accept proposal, specify that
-		                  MessageTemplate.MatchConversationId(Constants.SUBMIT_REQUEST));				// players will respond with a request
-		        msg = myAgent.blockingReceive(template);
-		        // display info on the GUI
-		        // continue listening until we receive an update from the stakeholders
+				noMsgReceived = false;
 			}
 			
+			if(requestCanceledMsg != null) {
+				
+				try {
+					int requestID = (int)requestCanceledMsg.getContentObject();
+					m_uiAgent.requestCanceled(requestID);
+					
+				} catch (UnreadableException e) {
+					e.printStackTrace();
+				}
+				noMsgReceived = false;
+			}
+			
+			if(noMsgReceived) {
+				block();				
+			}
 		}
-
-		@Override
-		public boolean done() {
-			// TODO Auto-generated method stub
-			return done;
-		}
-		
 	}
 	
 	/*******************************  METHODS   ****************************************/
 
-	
-	
-	public void submitRequest(RequestInfoModel requestInfo)
-	{
-		// TODO
+	/**
+	 * Called when a new task is recieved
+	 * @param task The new task
+	 */
+	public void receivedTask(TaskModel task) {
+		// TODO receive task
 	}
 	
-	public void userLogon(TeamType team)
-	{
-		// TODO
+	/**
+	 * Called when a request is canceled
+	 * @param requestID The canceled request
+	 */
+	public void requestCanceled(int requestID) {
+		// TODO request canceled
 	}
 	
-	public void taskComplete(TaskModel task)
-	{
-		// TODO
+	/**
+	 * Submits a new request
+	 * @param requestInfo The new request's information
+	 */
+	public void submitRequest(RequestInfoModel requestInfo) {
+		sendMessage(Constants.SUBMIT_REQUEST, requestInfo);
+	}
+	
+	/**
+	 * Informs of a new user logon
+	 * @param team
+	 */
+	public void userLogon(TeamType team) {
+		sendMessage(Constants.LOGON, team);
+	}
+	
+	/**
+	 * Informs of a completed task
+	 * @param task The task that was completed
+	 */
+	public void taskComplete(TaskModel task) {
+		sendMessage(Constants.LOGON, task);
 	}
 
-	
-	public void reqeuestDenied(int requestID)
-	{
-		// TODO
+	/**
+	 * Informs that a request was denied
+	 * @param requestID The ID of the denied request
+	 */
+	public void reqeuestDenied(int requestID) {
+		sendMessage(Constants.REQUEST_DENIED, requestID);
 	}
 	
+	/*******************************  HELPER METHODS   ****************************************/
+
+	/**
+	 * Sends a message to other agents
+	 * @param isRequest True if the performative is REQUEST, false if it is INFORM
+	 * @param conversationID The identifyer of the message type
+	 * @param payload The payload of the message
+	 * @param recipient An array of all recipients of the message
+	 */
+	private void sendMessage(String conversationID, Serializable payload)
+	{
+		if(m_taskAgentID == null)
+		{
+			searchForTaskAgent();
+		}
+		
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setConversationId(conversationID);
+		
+		msg.addReceiver(m_taskAgentID);			
+		
+		try 
+		{
+			msg.setContentObject(payload);
+		} 
+		catch (IOException e) 
+		{
+			System.err.println("Error Serializing type " + payload.getClass() + " " + e.getMessage());
+		}
+		send(msg);
+	}
 	
+	/**
+	 * Searches for an agent that meets the description
+	 * @param description A description of the required services 
+	 * @return Null if none are found, otherwise the first agent found
+	 */
+	private void searchForTaskAgent()
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+        ServiceDescription sd  = new ServiceDescription();
+        sd.setType(Constants.TASK_AGENT);
+        dfd.addServices(sd);
+                
+        try 
+        {
+			DFAgentDescription[] result = DFService.search(this, dfd);
+			
+			if(result.length <= 0) throw new Exception("No task agent found");
+			
+			m_taskAgentID = result[0].getName();
+		} 
+        catch (Exception e) 
+        {
+			e.printStackTrace();
+		}
+   	}
 	
-	
+	/**
+	 * Registers this agent in the DF
+	 */
+	private void registerAgent()
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType(Constants.UI_AGENT);
+        sd.setName(getLocalName());
+		
+        dfd.setName(getAID());  
+        dfd.addServices(sd);
+        
+        try 
+        {  
+            DFService.register(this, dfd);  
+        }
+        catch (FIPAException fe) 
+        {
+            fe.printStackTrace(); 
+        }
+	}
 }

@@ -50,7 +50,7 @@ public class LoginView extends JFrame {
 	/**
 	 * Populated with all the buttons and labels
 	 */
-	private JPanel panel;
+	private JPanel loginPanel, selectionPanel;
 	
 	/**
 	 * Controls the Login UI
@@ -67,11 +67,9 @@ public class LoginView extends JFrame {
 		
 		setTitle("LOGIN PAGE");
 		frame = new JFrame(label);
-		frame.setSize(300, 300);
+		frame.setSize(250, 200);
 		
 		m_viewController = vc;
-		
-		panel = new JPanel();
 		
 		welcome = new JLabel("Welcome to the Software Acquisition Request portal.\nPlease login to continue.");
 		
@@ -91,49 +89,53 @@ public class LoginView extends JFrame {
 	public void displayLoginWindow()
 	{
 		// TODO Auto-generated method stub
-		panel.setLayout(null);
-		this.add(panel);
+		loginPanel = new JPanel();
+		loginPanel.setLayout(null);
+		this.add(loginPanel);
 		
-		panel.add(welcome);
+		loginPanel.add(welcome);
 		
 		usernameLabel.setBounds(50, 8, 70, 20);
-		panel.add(usernameLabel);
+		loginPanel.add(usernameLabel);
 		
 		username.setBounds(50, 28, 170, 28);
-		panel.add(username);
+		loginPanel.add(username);
 		
 		passwordLabel.setBounds(50, 55, 70, 20);
-		panel.add(passwordLabel);
+		loginPanel.add(passwordLabel);
 		
 		password.setBounds(50, 75, 170, 28);
-		panel.add(password);
+		loginPanel.add(password);
 		
-		loginButton.setBounds(100, 135, 100, 25);
+		loginButton.setBounds(75, 115, 100, 25);
 		loginButton.setForeground(Color.BLACK);
 		loginButton.addActionListener(new LoginListener());
-		panel.add(loginButton);
-		frame.add(panel);
+		loginPanel.add(loginButton);
+		frame.add(loginPanel);
 		
 		frame.setVisible(true);		
 	}
 	
-	public void displayHomePage(String team) {
+	public void displayHomePage() {
 		
 		JButton sar = new JButton("Submit a new Software Request");
+		frame = new JFrame();
+		selectionPanel = new JPanel();
 		sar.addActionListener(new sarListener());
-		sar.setBounds(150, 50, 100, 50);
+		sar.setBounds(50, 50, 200, 20);
 		sar.setForeground(Color.BLACK);
 		
 		JButton viewTasks = new JButton("View assigned tasks");
 		viewTasks.addActionListener(new viewTaskListener());
-		viewTasks.setBounds(150, 200, 100, 50);
+		viewTasks.setBounds(50, 150, 200, 20);
 		viewTasks.setForeground(Color.BLACK);
 		
-		panel.add(sar);
-		panel.add(viewTasks);
+		this.add(selectionPanel);
+		selectionPanel.add(sar);
+		selectionPanel.add(viewTasks);
 		
-		frame.setSize(300,300);
-		frame.add(panel);
+		frame.setSize(300,200);
+		frame.add(selectionPanel);
 		frame.setVisible(true);
 	}
 	
@@ -141,9 +143,9 @@ public class LoginView extends JFrame {
 	{
 		password.setText("");
 		JLabel error = new JLabel("Incorrect password, please retry.");
-		error.setBounds(100, 110, 100, 20);
+		error.setBounds(100, 100, 100, 20);
 		error.setForeground(Color.RED);
-		panel.add(error);
+		loginPanel.add(error);
 	}
 	
 	/**
@@ -164,9 +166,10 @@ public class LoginView extends JFrame {
 				// all teams will use the same password, "password" for the simplicity of the demo
 				if (pass.equals("password")) {
 					// send team name to the view controller if the password is correct
+					frame.dispose();
 					dispose();
 					team = username.getText();
-					displayHomePage(team);
+					displayHomePage();
 				}
 				// incorrect password entered
 				else {
@@ -183,7 +186,7 @@ public class LoginView extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			m_viewController.createNewRequest();
-			dispose();
+			frame.dispose();
 		}
 	}
 	
@@ -192,8 +195,9 @@ public class LoginView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			m_viewController.getRequestInfo(team);
-			dispose();
+			
+			m_viewController.getRequestInfo(TeamType.valueOf(team));
+			frame.dispose();
 		}
 	}
 
