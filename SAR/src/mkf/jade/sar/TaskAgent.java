@@ -170,7 +170,7 @@ public class TaskAgent extends EnhancedAgent
 		
 		if(deniedManager != null)
 		{
-			cancelRequest(requestID);
+			cancelRequest(deniedManager.getRequestInfo());
 			System.out.println("Denied request with the requestID: " + requestID);
 		}
 		else
@@ -247,7 +247,7 @@ public class TaskAgent extends EnhancedAgent
 	 * Cancels the request for all agents
 	 * @param requestID The request that's been canceled
 	 */
-	private void cancelRequest(int requestID)
+	private void cancelRequest(RequestInfoModel requestInfo)
 	{
 		AID notificationAgent = searchForAgent(Constants.NOTIFICATION_AGENT);
 		AID[] uiAgents =  searchForAllAgents(Constants.SEND_TASK_TO_UI);
@@ -262,7 +262,7 @@ public class TaskAgent extends EnhancedAgent
 		}
 		recipients[length] = notificationAgent;
 
-		sendMessage(false, Constants.REQUEST_CANCELED, requestID, recipients);
+		sendMessage(false, Constants.REQUEST_CANCELED, requestInfo, recipients);
 	}
 	
 	/**

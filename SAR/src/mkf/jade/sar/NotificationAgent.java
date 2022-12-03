@@ -176,10 +176,10 @@ public class NotificationAgent extends EnhancedAgent {
 		public NotificationCommunicator() {
 			super(NotificationAgent.this);
 			notificationAgent = NotificationAgent.this;
-			requestCompleteTemplate = createMessageTemplate(Constants.REQUEST_COMPLETE);
-			requestCanceledTemplate = createMessageTemplate(Constants.REQUEST_CANCELED);
-			newTaskTemplate = createMessageTemplate(Constants.NOTIFICATION);
-			notifyVendorTemplate = createMessageTemplate(Constants.NOTIFY_VENDOR);
+			requestCompleteTemplate = createMessageTemplate(true, Constants.REQUEST_COMPLETE);
+			requestCanceledTemplate = createMessageTemplate(false, Constants.REQUEST_CANCELED);
+			newTaskTemplate = createMessageTemplate(true, Constants.NOTIFICATION);
+			notifyVendorTemplate = createMessageTemplate(true, Constants.NOTIFY_VENDOR);
 		}
 
 		/**
@@ -237,8 +237,9 @@ public class NotificationAgent extends EnhancedAgent {
 
 	}
 
-	private MessageTemplate createMessageTemplate(String conversationID) {
-		return MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.REQUEST),
+	private MessageTemplate createMessageTemplate(boolean isRequest, String conversationID) {
+		int perf = isRequest ? ACLMessage.REQUEST : ACLMessage.INFORM;
+		return MessageTemplate.and(MessageTemplate.MatchPerformative(perf),
 				MessageTemplate.MatchConversationId(conversationID));
 	}
 }

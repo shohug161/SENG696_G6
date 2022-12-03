@@ -13,7 +13,7 @@ public class Constants
 	public static final String REQUEST_DENIED = "denied";				// UI -> Task (int)INFORM
 	
 	public static final String SEND_TASK_TO_UI = "toUI";				// Task -> UI (TaskModel)INFORM
-	public static final String REQUEST_CANCELED = "canceled";			// Task -> UI, Notification (int)INFORM
+	public static final String REQUEST_CANCELED = "canceled";			// Task -> UI, Notification (RequestInfoModel)INFORM
 	
 	public static final String REQUEST_COMPLETE = "requestComplete";	// Task -> Notification (RequestInfoModel)REQUEST 
 	public static final String NOTIFICATION = "notification";			// Task -> Notification (TaskModel)REQUEST - NICE TO HAVE -> also send to scheduler

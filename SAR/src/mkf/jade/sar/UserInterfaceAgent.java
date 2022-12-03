@@ -95,8 +95,8 @@ public class UserInterfaceAgent extends EnhancedAgent {
 			if(requestCanceledMsg != null) {
 				
 				try {
-					int requestID = (int)requestCanceledMsg.getContentObject();
-					m_uiAgent.requestCanceled(requestID);
+					RequestInfoModel requestInfo = (RequestInfoModel)requestCanceledMsg.getContentObject();
+					m_uiAgent.requestCanceled(requestInfo.requestID);
 					
 				} catch (UnreadableException e) {
 					e.printStackTrace();
