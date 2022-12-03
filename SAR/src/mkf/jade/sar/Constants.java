@@ -2,10 +2,6 @@ package mkf.jade.sar;
 
 public class Constants 
 {
-	public static final String dbName = "SAR";
-	public static final String trainingDBtable = "Training";
-	public static final String sarDBtable = "SoftwareAcquisitionRequests";
-	
 	// MESSAGE Constants
 	public static final String SUBMIT_REQUEST = "submit";				// UI -> Task (RequestInfoModel)INFORM
 	public static final String LOGON = "logon";							// UI -> Task (TeamType)INFORM

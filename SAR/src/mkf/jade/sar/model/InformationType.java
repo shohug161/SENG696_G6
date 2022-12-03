@@ -12,3 +12,4 @@ public enum InformationType
 	LEVEL3, // restricted
 	LEVEL4; // classified
 }
+
