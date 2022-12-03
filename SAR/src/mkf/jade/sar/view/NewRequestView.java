@@ -13,6 +13,9 @@ import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
+import mkf.jade.sar.model.InformationType;
+import mkf.jade.sar.model.RequestInfoModel;
+
 /**
  * Shows a UI that can be used to submit a new software request
  * @author Desiree
@@ -26,10 +29,15 @@ public class NewRequestView extends JFrame {
 	private JTextField name, software, informationLevel, department, reason, cost, numUsers, email, vendor, vendorEmail, comments;
 	private JButton submitRequest;
 	private JPanel panel;
+	private JFrame frame;
 
 	public NewRequestView(ViewController vc)
 	{
 		m_viewController = vc;
+		setSize(500, 800);
+		
+		frame = new JFrame("New Request");
+		frame.setSize(400, 800);
 		
 		nameLabel = new JLabel("Name");
 		softwareLabel = new JLabel("Software Name");
@@ -54,34 +62,116 @@ public class NewRequestView extends JFrame {
 		vendor = new JTextField();
 		vendorEmail = new JTextField();
 		comments = new JTextField();
-		submitRequest = new JButton("Submit");
+		submitRequest = new JButton("Submit Request");
 		
 		panel = new JPanel(new SpringLayout());
 	}
 	
-	public void newRequest()
-	{
-		panel.add(nameLabel);
-		panel.add(emailLabel);
+	public void newRequest() {
+		frame.setSize(600, 900);
 		
-		SpringUtilities.makeCompactGrid(panel, 11, 2, 6, 6, 6, 6);
-		setVisible(true);
+		panel.add(nameLabel);
+		nameLabel.setLabelFor(name);
+		panel.add(name);
+		
+		panel.add(emailLabel);
+		emailLabel.setLabelFor(email);
+		panel.add(email);
+		
+		panel.add(softwareLabel);
+		softwareLabel.setLabelFor(software);
+		panel.add(software);
+		
+		panel.add(reasonLabel);
+		reasonLabel.add(reason);
+		panel.add(reason);
+		
+		panel.add(costLabel);
+		costLabel.setLabelFor(cost);
+		panel.add(cost);
+		
+		panel.add(departmentLabel);
+		departmentLabel.setLabelFor(department);
+		panel.add(department);
+		
+		panel.add(numUsersLabel);
+		numUsersLabel.setLabelFor(numUsers);
+		panel.add(numUsers);
+		
+		panel.add(informationLevelLabel);
+		informationLevelLabel.setLabelFor(informationLevel);
+		panel.add(informationLevel);
+		
+		panel.add(reasonLabel);
+		reasonLabel.setLabelFor(reason);
+		panel.add(reason);
+		
+		panel.add(departmentLabel);
+		departmentLabel.setLabelFor(department);
+		panel.add(department);
+		
+		panel.add(vendorLabel);
+		vendorLabel.setLabelFor(vendor);
+		panel.add(vendor);
+		
+		panel.add(vendorEmailLabel);
+		vendorEmailLabel.setLabelFor(vendorEmail);
+		panel.add(vendorEmail);
+		
+		panel.add(commentsLabel);
+		commentsLabel.setLabelFor(comments);
+		panel.add(comments);
+		
+		JLabel requestLabel = new JLabel("");
+		panel.add(requestLabel);
+		requestLabel.setLabelFor(submitRequest);
+		panel.add(submitRequest);
+		submitRequest.addActionListener(new RequestListener());
+		
+		SpringUtilities.makeCompactGrid(panel,
+                12, 2, //rows, cols
+                6, 6,        //initX, initY
+                6, 6);       //xPad, yPad
+		
+		
+		// TODO
+		// look into the default close operation
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 
+        //Set up the content pane.
+        panel.setOpaque(true);  //content panes must be opaque
+        frame.setContentPane(panel);
+ 
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
 	}
 	
-	class requestListener implements ActionListener {
+	public RequestInfoModel generateRequestInfo()
+	{
+		// public RequestInfoModel (String swName, String depName, int numUsers, double swCost, String busReason, InformationType iType, String reqName, String reqEmail, 
+		// String vName, String vEmail, String comm)
+		
+		RequestInfoModel rm = new RequestInfoModel(software.getText(), department.getText(), Integer.parseInt(numUsers.getText()), Double.parseDouble(cost.getText()), reason.getText(),
+				InformationType.valueOf(informationLevel.getText()), name.getText(), email.getText(), vendor.getText(), vendorEmail.getText(), comments.getText());
+		
+		return rm;
+	}
+	
+	class RequestListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			// send request to view controller
-			
+			// message saying request was submitted and they will be notified with updates
+			m_viewController.newRequestAdded(generateRequestInfo());
+			frame.dispose();
 		}
 		
 	}
 	
-	public static class SpringUtilities
-	{
-		
+	public static class SpringUtilities {
 		/* Used by makeCompactGrid. */
 	    private static SpringLayout.Constraints getConstraintsForCell(
 	                                                int row, int col,
@@ -91,7 +181,7 @@ public class NewRequestView extends JFrame {
 	        Component c = parent.getComponent(row * cols + col);
 	        return layout.getConstraints(c);
 	    }
-	    
+		
 		/**
 	     * Aligns the first <code>rows</code> * <code>cols</code>
 	     * components of <code>parent</code> in
@@ -122,7 +212,7 @@ public class NewRequestView extends JFrame {
 	        //Align all cells in each column and make them the same width.
 	        Spring x = Spring.constant(initialX);
 	        for (int c = 0; c < cols; c++) {
-	            Spring width = Spring.constant(0);
+	            Spring width = Spring.constant(200);
 	            for (int r = 0; r < rows; r++) {
 	                width = Spring.max(width,
 	                                   getConstraintsForCell(r, c, parent, cols).
@@ -160,6 +250,6 @@ public class NewRequestView extends JFrame {
 	        pCons.setConstraint(SpringLayout.SOUTH, y);
 	        pCons.setConstraint(SpringLayout.EAST, x);
 	    }
-	    
 	}
+	
 }

@@ -39,10 +39,10 @@ public class RequestInfoModel implements Serializable
 	public String vendorEmail;
 	public String comments;
 	
-	public RequestInfoModel (int reqID, String swName, String depName, int numUsers, double swCost, String busReason, InformationType iType, String reqName, String reqEmail, 
+	public RequestInfoModel (String swName, String depName, int numUsers, double swCost, String busReason, InformationType iType, String reqName, String reqEmail, 
 			String vName, String vEmail, String comm)
 	{
-		requestID = reqID;
+		requestID = idOffset++;
 		softwareName = swName;
 		departmentName = depName;
 		numberOfUsers = numUsers;

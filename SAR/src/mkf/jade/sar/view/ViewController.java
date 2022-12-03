@@ -28,7 +28,7 @@ public class ViewController {
 		
 	}
 	
-	public void getRequestInfo(String team)
+	public void getRequestInfo(TeamType team)
 	{
 		
 	}
@@ -40,6 +40,13 @@ public class ViewController {
 	
 	public void userLogon(String teamName)
 	{
+		
+	}
+	
+	public void newRequestAdded(RequestInfoModel rm)
+	{
+		// TODO
+		// send request to task agent 
 		
 	}
 	
