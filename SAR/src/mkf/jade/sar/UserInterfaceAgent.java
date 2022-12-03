@@ -26,7 +26,6 @@ public class UserInterfaceAgent extends EnhancedAgent {
 	private AID m_taskAgentID;
 	public ViewController m_viewController;
 	public RequestInfoModel rim;
-	public UserInterface gui;
 	
 	/**
 	 * Sets up this agent
@@ -37,9 +36,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		registerAgent();
 		
 		addBehaviour(new UserInterfaceCommunicator());
-		m_viewController = new ViewController();
-		
-		gui = new UserInterface("Software Acquisition Request System");
+		m_viewController = new ViewController(this);
 	}
 	
 	
@@ -118,6 +115,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 	 */
 	public void receivedTask(TaskModel task) {
 		// TODO receive task
+		// add it to the list of tasks?
 	}
 	
 	/**

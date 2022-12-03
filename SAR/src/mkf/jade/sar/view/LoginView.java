@@ -195,7 +195,7 @@ public class LoginView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			m_viewController.getRequestInfo(TeamType.valueOf(team));
+			m_viewController.displayRequestInfo(TeamType.valueOf(team));
 			frame.dispose();
 		}
 	}

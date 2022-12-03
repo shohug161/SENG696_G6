@@ -163,10 +163,13 @@ public class NewRequestView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			// send request to view controller
 			// message saying request was submitted and they will be notified with updates
 			m_viewController.newRequestAdded(generateRequestInfo());
+			// TODO
+			// take them back to the login page
 			frame.dispose();
+			m_viewController.displayLoginInfo();
+
 		}
 		
 	}
