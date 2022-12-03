@@ -1,1 +1,1 @@
-http://IT-C22865.uc.ucalgary.ca:7778/acc
+http://localhost:7778/acc

@@ -9,12 +9,14 @@ public class ViewController {
 	private NewRequestView requestUI;
 	private TaskChecklistView taskUI;
 	private ZoneManagerView zoneManagerUI;
+	private SelectRequestView selectRequestUI;
 	
 	public ViewController() 
 	{
 		loginUI = new LoginView("Login", this);
 		requestUI = new NewRequestView(this);
 		taskUI = new TaskChecklistView(this);
+		selectRequestUI = new SelectRequestView(this);
 	}
 	
 	public void displayLoginInfo()
@@ -25,12 +27,13 @@ public class ViewController {
 	
 	public void displayRequestInfo(RequestModel rm)
 	{
-		
+		// TODO
+		// 
 	}
 	
 	public void getRequestInfo(TeamType team)
 	{
-		
+		//
 	}
 	
 	public void addTaskToSelection(TaskModel task)
