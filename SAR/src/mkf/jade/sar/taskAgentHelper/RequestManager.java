@@ -370,7 +370,7 @@ public class RequestManager
 				break;
 				
 			case legal:
-				taskItems.add(new TaskItemModel("Review Constracts and Statment of Work"));
+				taskItems.add(new TaskItemModel("Review Contracts and Statment of Work"));
 				taskItems.add(new TaskItemModel("Review liability, Agreement Issues and Other Legal Concerns"));
 				taskItems.add(new TaskItemModel("Negotiate Vendors and Suppliers on Agreements and Amendments"));
 				break;
@@ -389,7 +389,7 @@ public class RequestManager
 				break;
 				
 			case accountsPayable:
-				taskItems.add(new TaskItemModel("Process Payment Invoices received From the Vendor/Supplier"));
+				taskItems.add(new TaskItemModel("Process Payment Invoices received from the Vendor/Supplier"));
 				break;
 				
 			case deskside:
