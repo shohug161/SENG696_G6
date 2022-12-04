@@ -86,7 +86,7 @@ public class RequestManager
 	 */
 	public void taskComplete(TaskModel completedTask)
 	{
-		System.err.println("Task " + completedTask.taskID + " completed for " + getRequestInfo());
+		System.out.println("Task " + completedTask.taskID + " completed for " + getRequestInfo());
 		
 		completedTask.updateIsComplete();
 		
@@ -109,7 +109,7 @@ public class RequestManager
 	 */
 	public void trainingComplete(int trainingID)
 	{
-		System.err.println("Training complete for the requestor of " + getRequestInfo());
+		System.out.println("Training complete for the requestor of " + getRequestInfo());
 		
 		Iterator<TaskModel> taskList = m_requestModel.requestTasks.iterator();
 		
