@@ -84,19 +84,22 @@ public class TaskDatabaseManager
 	public void addCompletedRequest(RequestInfoModel request)
 	{
 		try {
-			String query = "INSERT INTO SAR VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO SAR VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStmt = m_dbConnection.prepareStatement(query);
 			preparedStmt.setInt(1, request.requestID);
 			preparedStmt.setString(2, request.requestorName);
 			preparedStmt.setString(3, request.softwareName);
 			preparedStmt.setString(4, request.businessReason);
 			preparedStmt.setString(5, request.departmentName);
-			preparedStmt.setInt(6, request.numberOfUsers);
-			preparedStmt.setDouble(7, request.softwareCost);
-			preparedStmt.setInt(8, InformationTypeHelper.convertToInt(request.informationType));
-			preparedStmt.setString(9, "Complete");
-			preparedStmt.setString(10, "Complete");
-			preparedStmt.setString(11, request.vendorName);
+			preparedStmt.setInt(6, request.trainingID);
+			preparedStmt.setInt(7, request.numberOfUsers);
+			preparedStmt.setDouble(8, request.softwareCost);
+			preparedStmt.setInt(9, InformationTypeHelper.convertToInt(request.informationType));
+			preparedStmt.setTimestamp(10, null);
+			preparedStmt.setString(11, null);
+			preparedStmt.setString(12, "Complete");
+			preparedStmt.setString(13, "Complete");
+			preparedStmt.setString(14, request.vendorName);
 			
 			preparedStmt.execute();
 			
