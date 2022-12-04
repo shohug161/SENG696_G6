@@ -14,6 +14,7 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import mkf.jade.sar.model.InformationType;
+import mkf.jade.sar.model.InformationTypeHelper;
 import mkf.jade.sar.model.RequestInfoModel;
 
 /**
@@ -143,7 +144,7 @@ public class NewRequestView extends JFrame {
         frame.setContentPane(panel);
  
         //Display the window.
-        frame.pack();
+        //frame.pack();
         frame.setVisible(true);
 	}
 	
@@ -151,6 +152,7 @@ public class NewRequestView extends JFrame {
 	{
 		// public RequestInfoModel (String swName, String depName, int numUsers, double swCost, String busReason, InformationType iType, String reqName, String reqEmail, 
 		// String vName, String vEmail, String comm)
+		// InformationTypeHelper.convertFromInt(Integer.parseInt(informationLevel.getText()))
 		
 		RequestInfoModel rm = new RequestInfoModel(software.getText(), department.getText(), Integer.parseInt(numUsers.getText()), Double.parseDouble(cost.getText()), reason.getText(),
 				InformationType.valueOf(informationLevel.getText()), name.getText(), email.getText(), vendor.getText(), vendorEmail.getText(), comments.getText());
@@ -163,10 +165,13 @@ public class NewRequestView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			// send request to view controller
 			// message saying request was submitted and they will be notified with updates
 			m_viewController.newRequestAdded(generateRequestInfo());
+			// TODO
+			// take them back to the login page
 			frame.dispose();
+			m_viewController.displayLoginInfo();
+
 		}
 		
 	}

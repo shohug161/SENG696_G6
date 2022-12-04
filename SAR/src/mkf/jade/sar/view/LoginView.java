@@ -146,6 +146,7 @@ public class LoginView extends JFrame {
 		error.setBounds(100, 100, 100, 20);
 		error.setForeground(Color.RED);
 		loginPanel.add(error);
+		loginPanel.repaint();
 	}
 	
 	/**
@@ -195,7 +196,7 @@ public class LoginView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			m_viewController.getRequestInfo(TeamType.valueOf(team));
+			m_viewController.displayRequestInfo(TeamType.valueOf(team));
 			frame.dispose();
 		}
 	}

@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 
 import mkf.jade.sar.model.RequestInfoModel;
 
-public class SelectRequestView {
+public class SelectRequestView extends JFrame {
 	
 /*******************************  Member Variable   ****************************************/
 	
@@ -31,7 +31,7 @@ public class SelectRequestView {
 	private static final long serialVersionUID = 3831954889812709975L;
 
 	/**
-	 * List of names that training has been enabled for
+	 * List of requests that the user has tasks for
 	 */
 	private DefaultListModel<JPanel> m_requestsListModel;
 	
@@ -71,9 +71,7 @@ public class SelectRequestView {
 		panel.add(chooseButton, BorderLayout.SOUTH);
 
 		panel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
-		
-		// TODO is this correct?
-		panel.setVisible(true);
+		setVisible(true);
 	}
 	
 	/*******************************  Methods   ****************************************/
@@ -154,6 +152,7 @@ public class SelectRequestView {
 		{
 			int index = m_requestDisplayList.getSelectedIndex();
 			//TODO m_controller.<REPLACE WITH METHOD TO CHOOSE A REQUEST>(m_requestIDRefList.get(index));
+			
 		}
 	}
 	

@@ -18,4 +18,21 @@ public class InformationTypeHelper
 		}
 		return 0;
 	}	
+	
+	public static InformationType convertFromInt(int infoType)
+	{
+		switch(infoType)
+		{
+			case 1:
+				return InformationType.LEVEL1;
+			case 2:
+				return InformationType.LEVEL2;
+			case 3:
+				return InformationType.LEVEL3;
+			case 4:
+				return InformationType.LEVEL4;
+		}
+		// default to LEVEL4 to make sure that the security is not overlooked
+		return InformationType.LEVEL4;
+	}
 }
