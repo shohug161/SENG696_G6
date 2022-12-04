@@ -228,6 +228,13 @@ public class TaskAgent extends EnhancedAgent
 	 */
 	public void scheduleSoftwareInstall(RequestInfoModel request)
 	{
+		// Add delay here so that the task agent has time to insert the request into the database
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} 
+		
 		AID recipient = searchForAgent(Constants.SCHEDULER_AGENT);
 		sendMessage(true, Constants.SCHEDULE_INSTALL, request, recipient);
 	}
