@@ -13,7 +13,7 @@ public class ViewController {
 	private TaskChecklistView taskUI;
 	private ZoneManagerView zoneManagerUI;
 	private SelectRequestView selectRequestUI;
-	private RequestManager requestManager;
+	public TaskModel task;
 	
 	public ViewController(UserInterfaceAgent ui) 
 	{
@@ -21,55 +21,81 @@ public class ViewController {
 		loginUI = new LoginView("Login", this);
 		requestUI = new NewRequestView(this);
 		taskUI = new TaskChecklistView(this);
+		selectRequestUI = new SelectRequestView(this);
+		zoneManagerUI = new ZoneManagerView(this);
 	}
 	
 	public void displayLoginInfo()
 	{
-		System.out.println("Display Login Info");
+		System.err.println("Display Login Info");
 
 		loginUI = new LoginView("Login", this);
 		loginUI.displayLoginWindow();
 	}
 	
-	
+	/**
+	 * Calls SelectRequestView UI to display all of the requests that a user has tasks for.
+	 * @param team
+	 */
 	public void displayRequestInfo(TeamType team)
 	{
-		// TODO
-		// get a list of requests for the team
-		
 		selectRequestUI = new SelectRequestView(this);
+		selectRequestUI.display();
 	}
 	
-	public void getRequestInfo(TeamType team, RequestInfoModel rm)
+	/**
+	 * Calls ZoneManagerView for zone managers and TaskChecklistView UI for all other users when they pick "View Tasks".
+	 * Allows users to approve or deny the tasks they are assigned.
+	 * @param team
+	 */
+	public void getRequestInfo(TeamType team)
 	{
 		// TODO
 		// display zone manager view for zone manager or else tasks for other users
-		if (team.equals(TeamType.valueOf("zoneManager")))
+		if (team.equals(TeamType.zoneManager))
 		{
-			zoneManagerReview(rm);
+			zoneManagerReview();
 		}
 		else {
 			// TODO
 			// task checklist view for other users
+			taskUI.displayTasks(task);
 		}
 	}
 	
-	public void zoneManagerReview(RequestInfoModel rm)
+	/**
+	 * calls the zone manager UI
+	 */
+	public void zoneManagerReview()
 	{
-		zoneManagerUI = new ZoneManagerView(this, rm);
-		zoneManagerUI.display();
+		
+		zoneManagerUI.display(task);
 	}
 	
-	public void zoneManagerApproval(RequestInfoModel rm)
+	public void requestValidated(TaskModel tm)
 	{
 		// make a new task model
-		// TaskModel tm = RequestManager.createTaskModel(TeamType.valueOf("zoneManager"));
-		
+		// update request with the information level 
 	}
 	
 	public void addTaskToSelection(TaskModel task)
 	{
 		
+	}
+	
+	public void userDeniedRequest(int requestID)
+	{
+		// TODO
+		// select request UI again
+		selectRequestUI.removeRequest(requestID);
+		uiAgent.reqeuestDenied(requestID);
+	}
+	
+	public void taskItemComplete(TaskModel tm)
+	{
+		// select request UI again
+		task = tm;
+		uiAgent.taskComplete(tm);
 	}
 	
 	public void userLogon(String teamName)
@@ -79,15 +105,13 @@ public class ViewController {
 	
 	public void newRequestAdded(RequestInfoModel rm)
 	{
-		// TODO
 		uiAgent.submitRequest(rm);
-		// take back to home page??
+		displayLoginInfo();
 	}
 	
 	public void createNewRequest()
 	{
 		requestUI.newRequest();
 	}
-	
 	
 }

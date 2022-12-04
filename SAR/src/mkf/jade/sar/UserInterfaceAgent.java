@@ -115,7 +115,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 	 */
 	public void receivedTask(TaskModel task) {
 		// TODO receive task
-		// add it to the list of tasks?
+		m_viewController.task = task;
 	}
 	
 	/**
@@ -124,6 +124,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 	 */
 	public void requestCanceled(int requestID) {
 		// TODO request canceled
+		// do we need this?
 	}
 	
 	/**

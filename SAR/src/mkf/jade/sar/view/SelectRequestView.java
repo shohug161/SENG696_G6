@@ -14,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import mkf.jade.sar.model.InformationTypeHelper;
 import mkf.jade.sar.model.RequestInfoModel;
 
 public class SelectRequestView extends JFrame {
@@ -50,13 +51,17 @@ public class SelectRequestView extends JFrame {
 		m_controller = controller;
 		
 		m_requestsListModel = new DefaultListModel<JPanel>();
-		m_requestDisplayList = new JList<JPanel>(m_requestsListModel);
-		
+		m_requestDisplayList = new JList<JPanel>(m_requestsListModel);	
+		m_requestDisplayList.setFont(new Font("Serif", Font.PLAIN, 24));
+	}
+	
+	/*******************************  Methods   ****************************************/
+
+	public void display() 
+	{
 		JLabel title = new JLabel("Choose Request");
 		JButton chooseButton = new JButton("Choose");
-		
-		m_requestDisplayList.setFont(new Font("Serif", Font.PLAIN, 24));
-		
+
 		chooseButton.addActionListener(new ChooseButtonPressed(this));
 		chooseButton.setFont(new Font("Serif", Font.PLAIN, 24));
 		
@@ -72,10 +77,9 @@ public class SelectRequestView extends JFrame {
 
 		panel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
 		setVisible(true);
+		
 	}
 	
-	/*******************************  Methods   ****************************************/
-
 	/**
 	 * Adds a name to the list
 	 * @param name The name added to the list
@@ -152,7 +156,7 @@ public class SelectRequestView extends JFrame {
 		{
 			int index = m_requestDisplayList.getSelectedIndex();
 			//TODO m_controller.<REPLACE WITH METHOD TO CHOOSE A REQUEST>(m_requestIDRefList.get(index));
-			
+			// m_viewController.displayRequestInfo(team);
 		}
 	}
 	
