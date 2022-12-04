@@ -124,8 +124,6 @@ public class LoginView extends JFrame {
 	
 	public void displayHomePage() {
 		
-		System.out.println("Displaying home page");
-		
 		JButton sar = new JButton("Submit a new Software Request");
 		frame = new JFrame("Home Page");
 		selectionPanel = new JPanel();
@@ -185,7 +183,6 @@ public class LoginView extends JFrame {
 					dispose();
 					team = username.getText();
 					m_viewController.userLogon(team);
-					
 				}
 				// incorrect password entered
 				else {

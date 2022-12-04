@@ -70,9 +70,15 @@ public class SelectRequestView extends JFrame {
 		setSize(800, 800);
 		JLabel title = new JLabel("Choose a Request");
 		JButton chooseButton = new JButton("Choose");
+		JButton cancelButton = new JButton("Cancel");
+		
+		JPanel buttonsPanel = new JPanel();
 
 		chooseButton.addActionListener(new ChooseButtonPressed(this));
 		chooseButton.setFont(new Font("Serif", Font.PLAIN, 24));
+		
+		cancelButton.addActionListener(new CancelButtonPressed());
+		cancelButton.setFont(new Font("Serif", Font.PLAIN, 24));
 		
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setFont(new Font("Serif", Font.PLAIN, 24));
@@ -80,12 +86,13 @@ public class SelectRequestView extends JFrame {
 		panel.setLayout(new BorderLayout());
 		panel.add(title, BorderLayout.NORTH);
 		panel.add(m_requestDisplayList, BorderLayout.CENTER);
-		panel.add(chooseButton, BorderLayout.SOUTH);
+		buttonsPanel.add(cancelButton);
+		buttonsPanel.add(chooseButton);
+		panel.add(buttonsPanel, BorderLayout.SOUTH);
 
 		panel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
 		add(panel);
 		setVisible(true);
-		
 	}
 	
 	/**
@@ -102,33 +109,9 @@ public class SelectRequestView extends JFrame {
 								requestInfo.vendorName + ", Requestor: " + requestInfo.requestorName;
 			
 			requests.add(requestInfo);
-			
-			/***
-			JPanel listEntry = new JPanel();
 
-			listEntry.setLayout(new FlowLayout());
-
-			JLabel requestIDLabel =  new JLabel(Integer.toString(requestInfo.requestID));
-			JLabel softwareName =  new JLabel(requestInfo.softwareName);
-			JLabel vendorName =  new JLabel("Vendor: " + requestInfo.vendorName);
-			JLabel requestorName =  new JLabel("Requestor: " + requestInfo.requestorName);
-			
-			requestIDLabel.setHorizontalAlignment(SwingConstants.LEFT);
-			softwareName.setHorizontalAlignment(SwingConstants.CENTER);
-			vendorName.setHorizontalAlignment(SwingConstants.CENTER);
-			requestorName.setHorizontalAlignment(SwingConstants.RIGHT);
-			
-			listEntry.add(requestIDLabel);
-			listEntry.add(softwareName);
-			listEntry.add(vendorName);
-			listEntry.add(requestorName);
-			m_requestIDRefList.add(requestInfo.requestID);
-			m_requestsListModel.add(m_requestIDRefList.size() - 1, listEntry);
-			***/
-			
 			m_requestIDRefList.add(requestInfo.requestID);
 			m_requestsListModel.add(m_requestIDRefList.size() - 1, request);
-
 			
 			m_requestDisplayList.setSelectedIndex(0);
 			m_requestDisplayList.revalidate();			
@@ -206,5 +189,17 @@ public class SelectRequestView extends JFrame {
 		{
 			m_parent.chooseButtonPressed();
 		}
+	}
+	
+	private class CancelButtonPressed implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			dispose();
+			m_controller.displayHomePage();
+		}
+		
 	}
 }

@@ -168,7 +168,6 @@ public class NewRequestView extends JFrame {
 			// take them back to the login page
 			frame.dispose();
 			m_viewController.displayLoginInfo();
-
 		}
 		
 	}

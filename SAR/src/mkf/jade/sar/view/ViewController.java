@@ -102,6 +102,7 @@ public class ViewController {
 		// remove from select request view
 		TaskModel task = getTaskByRequestID(id);
 		selectRequestUI.removeRequest(id);
+		
 	}
 	
 	/**
@@ -146,8 +147,12 @@ public class ViewController {
 	 */
 	public void userLogon(String teamName)
 	{
-		System.out.println(teamName + " logged on");
 		uiAgent.userLogon(TeamType.valueOf(teamName));
+		displayHomePage();
+	}
+	
+	public void displayHomePage()
+	{
 		loginUI.displayHomePage();
 	}
 	
@@ -178,6 +183,5 @@ public class ViewController {
 		loginUI = new LoginView("Login", this);
 		selectRequestUI.clearList();
 		loginUI.displayLoginWindow();
-		
 	}
 }
