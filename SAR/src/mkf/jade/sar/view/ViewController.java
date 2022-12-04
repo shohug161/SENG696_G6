@@ -71,10 +71,11 @@ public class ViewController {
 	 * Allows users to approve or deny the tasks they are assigned.
 	 * @param team
 	 */
-	public void getRequestInfo(int requestID, RequestInfoModel rm)
+	public void chooseRequest(int requestID, RequestInfoModel rm)
 	{
 		
-		TeamType team = getTaskByRequestID(requestID).team;
+		TaskModel task = getTaskByRequestID(requestID);
+		TeamType team = task.team;
 		
 		if (team.equals(TeamType.zoneManager))
 		{
@@ -84,7 +85,7 @@ public class ViewController {
 			// TODO
 			// task checklist view for other users
 			// create task for the user
-			taskUI.displayTasks();
+			taskUI.displayTasks(task);
 		}
 	}
 	
@@ -96,14 +97,34 @@ public class ViewController {
 		zoneManagerUI.display(rm);
 	}
 	
+	/**
+	 * Request is validated by the zone manager
+	 * @param id The request id that's been validated
+	 * @param level The level that's been confirmed for the request by the zone manager
+	 */
 	public void requestValidated(int id, InformationType level)
 	{
-		// make a new task model
-		// update request with the information level
-		// remove from select request view
+		displayHomePage();
 		TaskModel task = getTaskByRequestID(id);
-		selectRequestUI.removeRequest(id);
+		task.requestInfo.informationType = level;
+		completeTask(task);
 		
+		uiAgent.taskComplete(task);
+		
+		selectRequestUI.removeRequest(id);
+	}
+	
+	/**
+	 * Completes all tasks items in a task - Should only be used for zone manager task
+	 * @param task The task to complete
+	 */
+	private void completeTask(TaskModel task)
+	{
+		for(TaskItemModel ti : task.taskItems)
+		{
+			ti.isComplete = true;
+		}
+		task.updateIsComplete();
 	}
 	
 	/**
@@ -148,8 +169,9 @@ public class ViewController {
 	 */
 	public void userLogon(String teamName)
 	{
-		uiAgent.userLogon(TeamType.valueOf(teamName));
-		displayHomePage();
+		TeamType team = TeamType.valueOf(teamName);
+		uiAgent.userLogon(team);
+		loginUI.displayHomePage(team == TeamType.requestor);
 	}
 	
 	public void displayHomePage()
@@ -180,8 +202,9 @@ public class ViewController {
 	 */
 	public void userLoggedOut()
 	{
-		// do we have any specific messages?
 		loginUI = new LoginView("Login", this);
+		tasks.clear();
+		uiAgent.userLogon(TeamType.noTeam);
 		selectRequestUI.clearList();
 		loginUI.displayLoginWindow();
 	}

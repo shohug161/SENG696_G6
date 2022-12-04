@@ -147,7 +147,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 	 * @param task The task that was completed
 	 */
 	public void taskComplete(TaskModel task) {
-		sendMessage(Constants.LOGON, task);
+		sendMessage(Constants.TASK_COMPLETE, task);
 	}
 
 	/**

@@ -86,6 +86,7 @@ public class LoginView extends JFrame {
 	
 	/*******************************  METHODS   ****************************************/	
 
+
 	public void displayLoginWindow()
 	{
 		// TODO Auto-generated method stub
@@ -122,7 +123,13 @@ public class LoginView extends JFrame {
 		frame.setVisible(true);		
 	}
 	
+	
 	public void displayHomePage() {
+		displayHomePage(team.equals("requestor"));
+	}
+
+	
+	public void displayHomePage(boolean isRequestor) {
 		
 		JButton sar = new JButton("Submit a new Software Request");
 		frame = new JFrame("Home Page");
@@ -141,8 +148,8 @@ public class LoginView extends JFrame {
 		logout.setBounds(50, 200, 200, 20);
 		logout.setForeground(Color.BLACK);
 		
-		selectionPanel.add(sar);
-		selectionPanel.add(viewTasks);
+		selectionPanel.add(sar);		
+		if(!isRequestor)selectionPanel.add(viewTasks);
 		selectionPanel.add(logout);
 		this.add(selectionPanel);
 		

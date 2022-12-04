@@ -7,52 +7,63 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 import javax.swing.JLabel;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import mkf.jade.sar.model.*;
 
 public class TaskChecklistView extends JFrame {
 
+
+	private static final long serialVersionUID = -5715719695591068744L;
 	private ViewController m_viewController;
 	private JPanel requestPanel, taskPanel;
-	private int tasksApproved;
 	private JFrame frame;
 	private TaskModel taskModel;
 	
 	public TaskChecklistView(ViewController vc)
 	{
 		m_viewController = vc;
-		tasksApproved = 0;
 		frame = new JFrame();
 	}
 	
-	//TODO
-	// one window with all of their assigned tasks
 	
-	public void displayTasks()
+	public void displayTasks(TaskModel task)
 	{
+		taskModel = task;
 		RequestInfoModel requestInfo = taskModel.requestInfo;
+		
+		requestPanel = new JPanel();
+		requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.Y_AXIS));	
 		
 		JLabel software = new JLabel("Software:\n" + requestInfo.softwareName);
 		software.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(software);
+		
 		JLabel reason = new JLabel("Reason:\n" + requestInfo.businessReason);
 		reason.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(reason);
+		
 		JLabel cost = new JLabel("Cost:\n" + String.valueOf(requestInfo.softwareCost));
 		requestPanel.add(cost);
+		
 		JLabel department = new JLabel("Department:\n" + requestInfo.departmentName);
 		department.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(department);
+		
 		JLabel infoType = new JLabel("Information Level:\n" + Integer.toString(InformationTypeHelper.convertToInt(requestInfo.informationType)));
 		infoType.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(infoType);
+		
 		JLabel comments = new JLabel("Comments:\n" + requestInfo.comments);
 		comments.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(comments);
 		
 		frame.add("North", requestPanel);
+		
+		taskPanel = new JPanel(new SpringLayout());
 		
 		for (TaskItemModel t: taskModel.taskItems)
 		{
@@ -64,20 +75,26 @@ public class TaskChecklistView extends JFrame {
 			taskPanel.add(approve);
 		}
 		
-		JLabel label = new JLabel("");
+		//JLabel label = new JLabel("");
 		JButton deny = new JButton("Deny Request");
 		deny.addActionListener(new DenyListener());
-		taskPanel.add(label);
-		label.setLabelFor(deny);
+		//taskPanel.add(label);
+		//label.setLabelFor(deny);
 		taskPanel.add(deny);
 		
+		//JLabel slabel = new JLabel("");
+		JButton submit = new JButton("Submit");
+		submit.addActionListener(new SubmitTasks());
+		//taskPanel.add(slabel);
+		//slabel.setLabelFor(submit);
+		taskPanel.add(submit);
+		
 		SpringUtilities.makeCompactGrid(taskPanel,
-                taskModel.taskItems.size()+1, 2, //rows, cols
+				taskModel.taskItems.size() + 1, 2, //rows, cols
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
 		
 		
-		// TODO
 		// look into the default close operation
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
@@ -89,6 +106,15 @@ public class TaskChecklistView extends JFrame {
 		frame.setVisible(true);
 	}
 	
+	public boolean allTasksApproved()
+	{
+		if (taskModel.isComplete)
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Handles the button press once a user submits their approvals
 	 * @author Desi
@@ -98,19 +124,31 @@ public class TaskChecklistView extends JFrame {
 	{
 		
 		private TaskItemModel taskItem;
+		private JButton button;
 
 		public ApproveListener(TaskItemModel t, JButton button) {
-			// TODO Auto-generated constructor stub
 			taskItem = t;
-			button.setBackground(Color.GREEN);
+			this.button = button;
 		}
 
 		// set task as completed
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			tasksApproved++;
-			taskItem.isComplete = true;
+
+			taskItem.isComplete = !taskItem.isComplete;
+			taskModel.updateIsComplete();
+			if(taskItem.isComplete)
+			{
+				button.setBackground(Color.GREEN);				
+			}
+			else
+			{
+				button.setBackground(Color.RED);
+			}
+			
+			button.setOpaque(true);
+			button.revalidate();
+			button.repaint();
 		}
 	}
 	
@@ -123,8 +161,9 @@ public class TaskChecklistView extends JFrame {
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			m_viewController.userDeniedRequest(taskModel.requestInfo.requestID);
+			dispose();
+			m_viewController.displayHomePage();
 		}
 	}
 	
@@ -136,19 +175,11 @@ public class TaskChecklistView extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			// send task list to the view controller to send to UI agent
 			m_viewController.taskItemComplete(taskModel, allTasksApproved());
+			dispose();
+			m_viewController.displayHomePage();
 		}
-	}
-	
-	public boolean allTasksApproved()
-	{
-		if (tasksApproved == taskModel.taskItems.size())
-		{
-			return true;
-		}
-		return false;
 	}
 
 }

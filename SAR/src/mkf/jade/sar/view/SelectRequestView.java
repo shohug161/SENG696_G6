@@ -101,7 +101,6 @@ public class SelectRequestView extends JFrame {
 	 */
 	public void addRequest(RequestInfoModel requestInfo)
 	{
-		System.out.println("Request added:\n" + requestInfo.toString());
 		if(!m_requestIDRefList.contains(requestInfo.requestID))
 		{
 			
@@ -163,7 +162,8 @@ public class SelectRequestView extends JFrame {
 			int index = m_requestDisplayList.getSelectedIndex();
 			
 			// get request information by the index and user name
-			m_controller.getRequestInfo(m_requestIDRefList.get(index), requests.get(index));
+			m_controller.chooseRequest(m_requestIDRefList.get(index), requests.get(index));
+			dispose();
 						
 		}
 	}
@@ -196,8 +196,8 @@ public class SelectRequestView extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			dispose();
+			
 			m_controller.displayHomePage();
 		}
 		

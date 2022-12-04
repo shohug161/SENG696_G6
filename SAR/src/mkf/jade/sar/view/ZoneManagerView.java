@@ -48,15 +48,19 @@ public class ZoneManagerView extends JFrame {
 		JLabel software = new JLabel("Software:\n" + requestInfo.softwareName);
 		software.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(software);
+		
 		JLabel reason = new JLabel("Reason:\n" + requestInfo.businessReason);
 		reason.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(reason);
+		
 		JLabel department = new JLabel("Department:\n" + requestInfo.departmentName);
 		department.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(department);
+		
 		JLabel infoType = new JLabel("Information Level:\n" + Integer.toString(InformationTypeHelper.convertToInt(requestInfo.informationType)));
 		infoType.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(infoType);
+		
 		JLabel comments = new JLabel("Comments:\n" + requestInfo.comments);
 		comments.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(comments);
@@ -69,7 +73,7 @@ public class ZoneManagerView extends JFrame {
 		updatePanel.add(informationType);
 		
 		JLabel placeholder = new JLabel("");
-		JButton confirmButton = new JButton("OKAY");
+		JButton confirmButton = new JButton("Confirm");
 		confirmButton.addActionListener(new ConfirmListener(requestInfo.requestID));
 		updatePanel.add(placeholder);
 		placeholder.setLabelFor(confirmButton);
@@ -105,7 +109,6 @@ public class ZoneManagerView extends JFrame {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			// go back to the requests to validate
 			int infoLevel = Integer.parseInt(informationType.getText());
 			frame.dispose();
