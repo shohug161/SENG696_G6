@@ -267,12 +267,13 @@ public class RequestManager
 		{
 			TaskModel localTask = tasks.next();
 			
-			if(localTask.taskID == completedTask.taskID)
+			if(localTask.team == completedTask.team)
 			{
 				localTask.taskItems = completedTask.taskItems;
-				localTask.taskItems = completedTask.taskItems;				
+				localTask.updateIsComplete();
 			}
 			allComplete = allComplete && localTask.isComplete;
+			
 		}
 		return allComplete;
 	}
@@ -393,7 +394,6 @@ public class RequestManager
 				break;
 				
 			case deskside:
-				// TODO DO_WE_NEED_THIS? taskItems.add(new TaskItemModel("Schedule Software Installion Job in the Job Scheduler"));
 				taskItems.add(new TaskItemModel("Install the Software or Assist with Installation"));
 				break;
 				

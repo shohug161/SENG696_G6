@@ -93,7 +93,7 @@ public class SchedulerAgent extends EnhancedAgent
 			m_agent = agent;
 			
 			m_scheduleInstall = MessageTemplate.and(
-									MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+									MessageTemplate.MatchPerformative(ACLMessage.REQUEST),
 									MessageTemplate.MatchConversationId(Constants.SCHEDULE_INSTALL));
 		}
 		
