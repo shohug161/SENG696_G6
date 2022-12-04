@@ -71,7 +71,6 @@ public class UserInterfaceAgent extends EnhancedAgent {
 		@Override
 		public void action() {
 
-			m_viewController.displayLoginInfo();
 			ACLMessage receivedTaskMsg = m_uiAgent.receive(m_receivedTask);
 			ACLMessage requestCanceledMsg = m_uiAgent.receive(m_requestCanceled);
 			
@@ -115,7 +114,7 @@ public class UserInterfaceAgent extends EnhancedAgent {
 	 */
 	public void receivedTask(TaskModel task) {
 		// TODO receive task
-		m_viewController.task = task;
+		m_viewController.addTaskToSelection(task);
 	}
 	
 	/**
