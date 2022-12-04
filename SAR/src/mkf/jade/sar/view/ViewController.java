@@ -152,24 +152,22 @@ public class ViewController {
 	/**
 	 * Handles the completion of a task(s)
 	 * @param tm, task model with the request information
-	 * @param allComplete, boolean determing whether all tasks have been approved
 	 */
-	public void taskItemComplete(TaskModel tm, boolean allComplete)
+	public void taskItemComplete(TaskModel task)
 	{
 		// select request UI again
-		if (allComplete) {
-			selectRequestUI.removeRequest(tm.requestInfo.requestID);
+		if (task.isComplete) {
+			selectRequestUI.removeRequest(task.requestInfo.requestID);
 		}
-		uiAgent.taskComplete(tm);
+		uiAgent.taskComplete(task);
 	}
 	
 	/**
 	 * Notifies UI agent that a user has logged on from a certain team
 	 * @param teamName
 	 */
-	public void userLogon(String teamName)
+	public void userLogon(TeamType team)
 	{
-		TeamType team = TeamType.valueOf(teamName);
 		uiAgent.userLogon(team);
 		loginUI.displayHomePage(team == TeamType.requestor);
 	}

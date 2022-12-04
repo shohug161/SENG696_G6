@@ -106,15 +106,6 @@ public class TaskChecklistView extends JFrame {
 		frame.setVisible(true);
 	}
 	
-	public boolean allTasksApproved()
-	{
-		if (taskModel.isComplete)
-		{
-			return true;
-		}
-		return false;
-	}
-	
 	/**
 	 * Handles the button press once a user submits their approvals
 	 * @author Desi
@@ -176,7 +167,7 @@ public class TaskChecklistView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// send task list to the view controller to send to UI agent
-			m_viewController.taskItemComplete(taskModel, allTasksApproved());
+			m_viewController.taskItemComplete(taskModel);
 			dispose();
 			m_viewController.displayHomePage();
 		}

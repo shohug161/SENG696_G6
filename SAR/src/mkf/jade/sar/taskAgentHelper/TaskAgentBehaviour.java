@@ -105,7 +105,7 @@ public class TaskAgentBehaviour extends CyclicBehaviour
 		} 
 		catch (Exception e)
 		{
-			System.err.println("ERROR - Could not read user logon message payload");
+			System.err.println("ERROR - Could not read user logon message payload "  + e.getMessage());
 		}
 	}
 
@@ -119,7 +119,7 @@ public class TaskAgentBehaviour extends CyclicBehaviour
 		} 
 		catch (Exception e) 
 		{
-			System.err.println("ERROR - Could not read task complete message payload");
+			System.err.println("ERROR - Could not read task complete message payload " + e.getMessage());
 		}
 	}
 	
@@ -132,7 +132,7 @@ public class TaskAgentBehaviour extends CyclicBehaviour
 		} 
 		catch (Exception e) 
 		{
-			System.err.println("ERROR - Could not read request denied message payload");
+			System.err.println("ERROR - Could not read request denied message payload " + e.getMessage());
 		}
 	}
 
@@ -145,7 +145,7 @@ public class TaskAgentBehaviour extends CyclicBehaviour
 		} 
 		catch (Exception e) 
 		{
-			System.err.println("ERROR - Could not read request submitted message payload");
+			System.err.println("ERROR - Could not read request submitted message payload " + e.getMessage());
 		}
 	}
 
@@ -158,7 +158,7 @@ public class TaskAgentBehaviour extends CyclicBehaviour
 		} 
 		catch (Exception e) 
 		{
-			System.err.println("ERROR - Could not read training complete message payload");
+			System.err.println("ERROR - Could not read training complete message payload "  + e.getMessage());
 		}
 	}
 	

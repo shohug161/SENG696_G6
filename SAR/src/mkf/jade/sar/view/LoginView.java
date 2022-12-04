@@ -22,6 +22,9 @@ public class LoginView extends JFrame {
 	
 	/*******************************  Member Variables   ****************************************/
 	
+
+	private static final long serialVersionUID = -5357064072022624068L;
+
 	/**
 	 * Used to display the login information and user selection
 	 */
@@ -35,7 +38,7 @@ public class LoginView extends JFrame {
 	/**
 	 * Text that will be on the panel for Username, Password and a welcome message
 	 */
-	private JLabel usernameLabel, passwordLabel, welcome;
+	private JLabel usernameLabel, passwordLabel, welcome, error;
 	
 	/**
 	 * Holds the username that the user logs in with
@@ -60,7 +63,7 @@ public class LoginView extends JFrame {
 	/**
 	 * Holds the team name that the user logs in with
 	 */
-	private String team;
+	private TeamType team;
 	
 	public LoginView(String label, ViewController vc) {
 		super(label);
@@ -89,7 +92,6 @@ public class LoginView extends JFrame {
 
 	public void displayLoginWindow()
 	{
-		// TODO Auto-generated method stub
 		loginPanel = new JPanel();
 		loginPanel.setLayout(null);
 		this.add(loginPanel);
@@ -120,12 +122,17 @@ public class LoginView extends JFrame {
 		loginPanel.add(loginButton);
 		frame.add(loginPanel);
 		
+		error = new JLabel("");
+		error.setBounds(50, 190, 250, 20);
+		error.setForeground(Color.RED);
+		loginPanel.add(error);
+		
 		frame.setVisible(true);		
 	}
 	
 	
 	public void displayHomePage() {
-		displayHomePage(team.equals("requestor"));
+		displayHomePage(team == TeamType.requestor);
 	}
 
 	
@@ -158,13 +165,11 @@ public class LoginView extends JFrame {
 		frame.setVisible(true);
 	}
 	
-	public void addErrorMessage()
+	private void addErrorMessage(String errorMessage)
 	{
 		password.setText("");
-		JLabel error = new JLabel("Incorrect password, please retry.");
-		error.setBounds(100, 100, 100, 20);
-		error.setForeground(Color.RED);
-		loginPanel.add(error);
+		error.setText(errorMessage);
+		loginPanel.revalidate();
 		loginPanel.repaint();
 	}
 	
@@ -177,25 +182,38 @@ public class LoginView extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			
+			String teamStr = username.getText();
+
+			try {
+				team = TeamType.valueOf(teamStr);
 			
-			if (password.getPassword() != null) {
-				String pass = new String(password.getPassword());
-				// check for the correct password
-				// all teams will use the same password, "password" for the simplicity of the demo
-				if (pass.equals("password")) {
-					// send team name to the view controller if the password is correct
-					frame.dispose();
-					dispose();
-					team = username.getText();
-					m_viewController.userLogon(team);
+				if (password.getPassword() != null) {
+					String pass = new String(password.getPassword());
+					
+					// check for the correct password
+					// all teams will use the same password, "password" for the simplicity of the demo
+					if (pass.equals("password")) {
+						
+						// send team name to the view controller if the password is correct
+						frame.dispose();
+						dispose();
+	
+						addErrorMessage("");
+
+						m_viewController.userLogon(team);
+					}
+					// incorrect password entered
+					else {
+						// ask for password info again
+						team = TeamType.noTeam;
+						addErrorMessage("Incorrect password, please retry.");
+					}
 				}
-				// incorrect password entered
-				else {
-					// ask for password info again
-					addErrorMessage();
-				}
+			}
+			catch(Exception e2) 
+			{
+				addErrorMessage("Incorrect username, please retry.");
 			}
 		}
 	}
@@ -215,7 +233,7 @@ public class LoginView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			m_viewController.displayRequestInfo(TeamType.valueOf(team));
+			m_viewController.displayRequestInfo(team);
 			frame.dispose();
 		}
 	}
@@ -224,7 +242,6 @@ public class LoginView extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			m_viewController.userLoggedOut();
 			frame.dispose();
 		}
