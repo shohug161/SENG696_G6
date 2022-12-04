@@ -257,7 +257,7 @@ public class TaskAgent extends EnhancedAgent
 	private void cancelRequest(RequestInfoModel requestInfo)
 	{
 		AID notificationAgent = searchForAgent(Constants.NOTIFICATION_AGENT);
-		AID[] uiAgents =  searchForAllAgents(Constants.SEND_TASK_TO_UI);
+		AID[] uiAgents =  searchForAllAgents(Constants.UI_AGENT);
 		
 		int length = uiAgents.length;
 		
