@@ -152,15 +152,14 @@ public class ViewController {
 	/**
 	 * Handles the completion of a task(s)
 	 * @param tm, task model with the request information
-	 * @param allComplete, boolean determing whether all tasks have been approved
 	 */
-	public void taskItemComplete(TaskModel tm, boolean allComplete)
+	public void taskItemComplete(TaskModel task)
 	{
 		// select request UI again
-		if (allComplete) {
-			selectRequestUI.removeRequest(tm.requestInfo.requestID);
+		if (task.isComplete) {
+			selectRequestUI.removeRequest(task.requestInfo.requestID);
 		}
-		uiAgent.taskComplete(tm);
+		uiAgent.taskComplete(task);
 	}
 	
 	/**
