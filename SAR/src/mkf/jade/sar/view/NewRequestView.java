@@ -145,14 +145,15 @@ public class NewRequestView extends JFrame {
         frame.setVisible(true);
 	}
 	
-	public RequestInfoModel generateRequestInfo()
+	private RequestInfoModel generateRequestInfo() throws Exception
 	{
 		// public RequestInfoModel (String swName, String depName, int numUsers, double swCost, String busReason, InformationType iType, String reqName, String reqEmail, 
 		// String vName, String vEmail, String comm)
 		// InformationTypeHelper.convertFromInt(Integer.parseInt(informationLevel.getText()))
+		InformationType info = InformationTypeHelper.convertFromInt(Integer.parseInt(informationLevel.getText()));
 		
 		RequestInfoModel rm = new RequestInfoModel(software.getText(), department.getText(), Integer.parseInt(numUsers.getText()), Double.parseDouble(cost.getText()), reason.getText(),
-				InformationType.valueOf(informationLevel.getText()), name.getText(), email.getText(), vendor.getText(), vendorEmail.getText(), comments.getText());
+				info, name.getText(), email.getText(), vendor.getText(), vendorEmail.getText(), comments.getText());
 		
 		return rm;
 	}
@@ -161,15 +162,19 @@ public class NewRequestView extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			// message saying request was submitted and they will be notified with updates
-			m_viewController.newRequestAdded(generateRequestInfo());
-			// TODO
-			// take them back to the login page
-			frame.dispose();
-			m_viewController.displayLoginInfo();
+			
+			try
+			{
+				m_viewController.newRequestAdded(generateRequestInfo());
+				
+				frame.dispose();
+				m_viewController.displayLoginInfo();
+				
+			}
+			catch(Exception e3)
+			{
+				System.err.println("Could not parse request info: " + e3.getMessage());
+			}
 		}
-		
 	}
-	
 }

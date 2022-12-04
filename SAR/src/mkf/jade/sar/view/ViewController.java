@@ -166,9 +166,8 @@ public class ViewController {
 	 * Notifies UI agent that a user has logged on from a certain team
 	 * @param teamName
 	 */
-	public void userLogon(String teamName)
+	public void userLogon(TeamType team)
 	{
-		TeamType team = TeamType.valueOf(teamName);
 		uiAgent.userLogon(team);
 		loginUI.displayHomePage(team == TeamType.requestor);
 	}
