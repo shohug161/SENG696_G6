@@ -39,9 +39,9 @@ public class TaskAgent extends EnhancedAgent
 				
 		addBehaviour(new TaskAgentBehaviour(this));
 		
-		
 		// TODO remove TEST CODE
-		//enableTraining("Frank");
+		requestSubmitted(new RequestInfoModel("SolidWorks", "Software Engineering", 50, 2032.23, "To do 3D modelling and simulations", InformationType.LEVEL3, "Josh Holiday", "jHoli@ucalgary.ca", 
+			"Attabottics", "Bilbobaggins@waggings.com", "We need this for next semester"));
 	}	
 	
 	/*******************************  Member Variables   ****************************************/
