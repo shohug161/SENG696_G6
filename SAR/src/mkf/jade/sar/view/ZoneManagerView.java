@@ -1,7 +1,5 @@
 package mkf.jade.sar.view;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import mkf.jade.sar.model.*;
@@ -32,6 +29,8 @@ public class ZoneManagerView extends JFrame {
 		updatePanel = new JPanel(new SpringLayout());
 		frame = new JFrame("Verify Information Level");
 		frame.setSize(400, 600);
+		frame.setTitle("Zone Manager Approval");
+		informationType = new JTextField();
 	}
 	
 	// TODO
@@ -43,9 +42,8 @@ public class ZoneManagerView extends JFrame {
 	
 	// create another panel on the frame that will appear if the zone manager wants to change the information level
 	
-	public void display(TaskModel task)
+	public void display(RequestInfoModel requestInfo)
 	{
-		RequestInfoModel requestInfo = task.requestInfo;
 		
 		JLabel software = new JLabel("Software:\n" + requestInfo.softwareName);
 		software.setAlignmentX(LEFT_ALIGNMENT);
@@ -63,7 +61,7 @@ public class ZoneManagerView extends JFrame {
 		comments.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(comments);
 		
-		frame.add(requestPanel);
+		frame.add("North", requestPanel);
 		
 		JLabel confirmInfoLevel = new JLabel("Confirm or Update\nInformation Level");
 		updatePanel.add(confirmInfoLevel);
@@ -72,7 +70,7 @@ public class ZoneManagerView extends JFrame {
 		
 		JLabel placeholder = new JLabel("");
 		JButton confirmButton = new JButton("OKAY");
-		confirmButton.addActionListener(new ConfirmListener());
+		confirmButton.addActionListener(new ConfirmListener(requestInfo.requestID));
 		updatePanel.add(placeholder);
 		placeholder.setLabelFor(confirmButton);
 		updatePanel.add(confirmButton);
@@ -89,7 +87,7 @@ public class ZoneManagerView extends JFrame {
  
         //Set up the content pane.
         updatePanel.setOpaque(true);  //content panes must be opaque
-		frame.add(updatePanel);
+		frame.add("South", updatePanel);
 		
 		frame.pack();
 		frame.setVisible(true);
@@ -97,15 +95,21 @@ public class ZoneManagerView extends JFrame {
 	
 	class ConfirmListener implements ActionListener
 	{
+		
+		private int requestID;
 
+		public ConfirmListener(int id)
+		{
+			requestID = id;
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			// go back to the requests to validate
 			int infoLevel = Integer.parseInt(informationType.getText());
-			requestInfo.informationType = InformationTypeHelper.convertFromInt(infoLevel);
-			m_viewController.requestValidated(requestInfo.requestID, InformationTypeHelper.convertFromInt(infoLevel));
 			frame.dispose();
+			m_viewController.requestValidated(requestID, InformationTypeHelper.convertFromInt(infoLevel));
 		}
 		
 	}

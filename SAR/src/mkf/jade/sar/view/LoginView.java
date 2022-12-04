@@ -67,11 +67,11 @@ public class LoginView extends JFrame {
 		
 		setTitle("LOGIN PAGE");
 		frame = new JFrame(label);
-		frame.setSize(250, 200);
+		frame.setSize(400, 250);
 		
 		m_viewController = vc;
 		
-		welcome = new JLabel("Welcome to the Software Acquisition Request portal.\nPlease login to continue.");
+		welcome = new JLabel("Welcome to the Software Acquisition Request portal.");
 		
 		usernameLabel = new JLabel("Username");
 		
@@ -93,21 +93,27 @@ public class LoginView extends JFrame {
 		loginPanel.setLayout(null);
 		this.add(loginPanel);
 		
+		JLabel welcome2 = new JLabel("Please login to continue.");
+		
+		welcome.setBounds(20, 8, 360, 20);
 		loginPanel.add(welcome);
 		
-		usernameLabel.setBounds(50, 8, 70, 20);
+		welcome2.setBounds(20, 28, 360, 20);
+		loginPanel.add(welcome2);
+		
+		usernameLabel.setBounds(80, 68, 70, 20);
 		loginPanel.add(usernameLabel);
 		
-		username.setBounds(50, 28, 170, 28);
+		username.setBounds(80, 88, 170, 28);
 		loginPanel.add(username);
 		
-		passwordLabel.setBounds(50, 55, 70, 20);
+		passwordLabel.setBounds(80, 115, 70, 20);
 		loginPanel.add(passwordLabel);
 		
-		password.setBounds(50, 75, 170, 28);
+		password.setBounds(80, 135, 170, 28);
 		loginPanel.add(password);
 		
-		loginButton.setBounds(75, 115, 100, 25);
+		loginButton.setBounds(95, 165, 100, 25);
 		loginButton.setForeground(Color.BLACK);
 		loginButton.addActionListener(new LoginListener());
 		loginPanel.add(loginButton);
@@ -118,8 +124,10 @@ public class LoginView extends JFrame {
 	
 	public void displayHomePage() {
 		
+		System.out.println("Displaying home page");
+		
 		JButton sar = new JButton("Submit a new Software Request");
-		frame = new JFrame();
+		frame = new JFrame("Home Page");
 		selectionPanel = new JPanel();
 		sar.addActionListener(new sarListener());
 		sar.setBounds(50, 50, 200, 20);
@@ -130,9 +138,15 @@ public class LoginView extends JFrame {
 		viewTasks.setBounds(50, 150, 200, 20);
 		viewTasks.setForeground(Color.BLACK);
 		
-		this.add(selectionPanel);
+		JButton logout = new JButton("Logout");
+		logout.addActionListener(new LogoutListener());
+		logout.setBounds(50, 200, 200, 20);
+		logout.setForeground(Color.BLACK);
+		
 		selectionPanel.add(sar);
 		selectionPanel.add(viewTasks);
+		selectionPanel.add(logout);
+		this.add(selectionPanel);
 		
 		frame.setSize(300,200);
 		frame.add(selectionPanel);
@@ -170,7 +184,8 @@ public class LoginView extends JFrame {
 					frame.dispose();
 					dispose();
 					team = username.getText();
-					displayHomePage();
+					m_viewController.userLogon(team);
+					
 				}
 				// incorrect password entered
 				else {
@@ -201,4 +216,13 @@ public class LoginView extends JFrame {
 		}
 	}
 
+	public class LogoutListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			m_viewController.userLoggedOut();
+			frame.dispose();
+		}
+	}
 }

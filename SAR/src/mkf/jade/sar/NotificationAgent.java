@@ -1,6 +1,10 @@
 package mkf.jade.sar;
 
 import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import mkf.jade.sar.model.RequestInfoModel;
@@ -15,7 +19,14 @@ public class NotificationAgent extends EnhancedAgent {
 	private static final long serialVersionUID = 7755405458454866155L;
 	private final String COMPANY_NAME = "University of Calgary";
 
-	public NotificationAgent() {
+	/**
+	 * Sets up this agent
+	 */
+	@Override
+	protected void setup()
+	{
+		registerAgent();
+		
 		addBehaviour(new NotificationCommunicator());
 	}
 
@@ -162,6 +173,29 @@ public class NotificationAgent extends EnhancedAgent {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Registers this agent in the DF
+	 */
+	private void registerAgent()
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType(Constants.NOTIFICATION_AGENT);
+        sd.setName(getLocalName());
+		
+        dfd.setName(getAID());  
+        dfd.addServices(sd);
+        
+        try 
+        {  
+            DFService.register(this, dfd);  
+        }
+        catch (FIPAException fe) 
+        {
+            fe.printStackTrace(); 
+        }
 	}
 	
 	private class NotificationCommunicator extends CyclicBehaviour {

@@ -30,7 +30,7 @@ public class TaskChecklistView extends JFrame {
 	//TODO
 	// one window with all of their assigned tasks
 	
-	public void displayTasks(TaskModel taskModel)
+	public void displayTasks()
 	{
 		RequestInfoModel requestInfo = taskModel.requestInfo;
 		
@@ -136,7 +136,7 @@ public class TaskChecklistView extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			// send task list to the view controller to send to UI agent
-			m_viewController.taskItemComplete(taskModel);
+			m_viewController.taskItemComplete(taskModel, allTasksApproved());
 		}
 	}
 	
@@ -149,9 +149,4 @@ public class TaskChecklistView extends JFrame {
 		return false;
 	}
 
-	
-	public void setTaskModel(TaskModel tm)
-	{
-		this.taskModel = tm;
-	}
 }
