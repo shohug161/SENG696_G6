@@ -52,6 +52,8 @@ public class TaskChecklistView extends JFrame {
 		comments.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(comments);
 		
+		frame.add("North", requestPanel);
+		
 		for (TaskItemModel t: taskModel.taskItems)
 		{
 			JLabel label = new JLabel(t.taskItemName);
@@ -81,7 +83,7 @@ public class TaskChecklistView extends JFrame {
  
         //Set up the content pane.
         taskPanel.setOpaque(true);  //content panes must be opaque
-		frame.add(taskPanel);
+		frame.add("South", taskPanel);
 		
 		frame.pack();
 		frame.setVisible(true);

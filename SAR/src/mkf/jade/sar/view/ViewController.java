@@ -83,6 +83,7 @@ public class ViewController {
 		else {
 			// TODO
 			// task checklist view for other users
+			// create task for the user
 			taskUI.displayTasks();
 		}
 	}
