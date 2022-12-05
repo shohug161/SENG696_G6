@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import mkf.jade.sar.model.InformationTypeHelper;
@@ -53,8 +52,8 @@ public class TaskDatabaseManager
 		try {
 			m_dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 			
-		} catch (SQLException e) {
-//			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -71,10 +70,10 @@ public class TaskDatabaseManager
 			Statement stmt = m_dbConnection.createStatement();
 			result = stmt.executeQuery(query);
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
-		return false;
+		return result != null;
 	}
 	
 	/**
@@ -104,7 +103,7 @@ public class TaskDatabaseManager
 			preparedStmt.execute();
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 }

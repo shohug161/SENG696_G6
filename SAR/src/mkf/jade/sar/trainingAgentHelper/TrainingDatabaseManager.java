@@ -3,7 +3,6 @@ package mkf.jade.sar.trainingAgentHelper;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import mkf.jade.sar.model.TrainingData;
 
@@ -46,7 +45,7 @@ public class TrainingDatabaseManager
 			m_dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 			
 		} catch (Exception e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
@@ -66,7 +65,7 @@ public class TrainingDatabaseManager
 			preparedStmt.execute();
 		
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 }

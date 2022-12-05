@@ -37,9 +37,9 @@ public class SchedulerAgent extends EnhancedAgent
 	 */
 	public void scheduleSoftwareInstall(RequestInfoModel requestInfo)
 	{
-		System.out.println("Receive schedule software isntallation request");
-		
 		m_databaseManager.scheduleSoftwareInstallation(requestInfo.requestID, findInstallerAndTime());
+		
+		System.out.println("Schedule agent has received request to schedule software installation");
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class SchedulerAgent extends EnhancedAgent
 				m_dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 				
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		
@@ -194,7 +194,7 @@ public class SchedulerAgent extends EnhancedAgent
 				preparedStmt.execute();
 			
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		
