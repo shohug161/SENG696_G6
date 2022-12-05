@@ -26,12 +26,13 @@ public class TaskChecklistView extends JFrame {
 	public TaskChecklistView(ViewController vc)
 	{
 		m_viewController = vc;
-		frame = new JFrame();
 	}
 	
 	
 	public void displayTasks(TaskModel task)
 	{
+		frame = new JFrame();
+
 		taskModel = task;
 		RequestInfoModel requestInfo = taskModel.requestInfo;
 		
@@ -60,10 +61,12 @@ public class TaskChecklistView extends JFrame {
 		JLabel comments = new JLabel("Comments:\n" + requestInfo.comments);
 		comments.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(comments);
+		requestPanel.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		
 		frame.getContentPane().add("North", requestPanel);
 		
-		taskPanel = new JPanel(new GridLayout(taskModel.taskItems.size() + 1, 2));
+		taskPanel = new JPanel(new GridLayout(taskModel.taskItems.size() + 2, 2));
+		
 		
 		for (TaskItemModel t: taskModel.taskItems)
 		{
@@ -73,7 +76,8 @@ public class TaskChecklistView extends JFrame {
 			
 			if(t.isComplete)
 			{
-				approve.setBackground(Color.GREEN);
+				approve.setText("Approved");
+				approve.setEnabled(false);
 			}
 			
 			taskPanel.add(label);
@@ -81,9 +85,14 @@ public class TaskChecklistView extends JFrame {
 			taskPanel.add(approve);
 		}
 		
+		JLabel filler = new JLabel("");
+		JLabel filler2 = new JLabel("");
+		taskPanel.add(filler);
+		taskPanel.add(filler2);
+		
 		JButton submit = new JButton("Submit");
 		submit.addActionListener(new SubmitTasks());
-		submit.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
+		//submit.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
 		taskPanel.add(submit);
 		
 		if(taskModel.team != TeamType.accountsPayable && 
@@ -91,14 +100,14 @@ public class TaskChecklistView extends JFrame {
 		{
 			JButton deny = new JButton("Deny Request");
 			deny.addActionListener(new DenyListener());
-			deny.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
+			//deny.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
 			taskPanel.add(deny);
 		}
 		
-		taskPanel.setBorder(BorderFactory.createEmptyBorder(20,0,0,0));
+		taskPanel.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		
 		// look into the default close operation
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
  
         //Set up the content pane.
         frame.revalidate();
