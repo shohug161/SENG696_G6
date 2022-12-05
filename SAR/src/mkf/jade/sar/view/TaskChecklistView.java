@@ -105,7 +105,6 @@ public class TaskChecklistView extends JFrame {
 			JButton deny = new JButton("Deny Request");
 			deny.addActionListener(new DenyListener());
 
-			deny.setBorder(BorderFactory.createEmptyBorder(15,0,10,0));
 			taskPanel.add(deny);
 		}
 		

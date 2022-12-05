@@ -86,7 +86,7 @@ public class RequestManager
 	 */
 	public void taskComplete(TaskModel completedTask)
 	{
-		System.out.println("Task " + completedTask.taskID + " completed for " + getRequestInfo());
+		System.out.println("Task for team " + completedTask.team + " completed for " + getRequestInfo());
 		
 		completedTask.updateIsComplete();
 		

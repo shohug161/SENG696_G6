@@ -54,7 +54,7 @@ public class TaskDatabaseManager
 			m_dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 	
@@ -71,10 +71,10 @@ public class TaskDatabaseManager
 			Statement stmt = m_dbConnection.createStatement();
 			result = stmt.executeQuery(query);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
-		return result != null;
+		return false;
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class TaskDatabaseManager
 			preparedStmt.execute();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 }
