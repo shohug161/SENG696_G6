@@ -79,11 +79,6 @@ public class ModuleCommunicator extends Thread
 	{
 		System.out.println("Server socket accepting connections on port 4141");
 		
-		m_controller.enableTraining("Arjuna");
-		m_controller.enableTraining("Kenny");
-		m_controller.enableTraining("Wayn");
-		m_controller.enableTraining("Lakshmi");
-
 		while(m_keepRunning)
 		{
 			try 
