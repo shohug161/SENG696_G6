@@ -1,13 +1,14 @@
 package mkf.jade.sar.view;
 
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 import javax.swing.JLabel;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
@@ -62,30 +63,39 @@ public class TaskChecklistView extends JFrame {
 		
 		frame.getContentPane().add("North", requestPanel);
 		
-		taskPanel = new JPanel(new SpringLayout());
+		taskPanel = new JPanel(new GridLayout(taskModel.taskItems.size() + 1, 2));
 		
 		for (TaskItemModel t: taskModel.taskItems)
 		{
 			JLabel label = new JLabel(t.taskItemName);
 			JButton approve = new JButton("Approve Task");
 			approve.addActionListener(new ApproveListener(t, approve));
+			
+			if(t.isComplete)
+			{
+				approve.setBackground(Color.GREEN);
+			}
+			
 			taskPanel.add(label);
 			label.setLabelFor(approve);
 			taskPanel.add(approve);
 		}
 		
-		JButton deny = new JButton("Deny Request");
-		deny.addActionListener(new DenyListener());
-		taskPanel.add(deny);
 		JButton submit = new JButton("Submit");
 		submit.addActionListener(new SubmitTasks());
+		submit.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
 		taskPanel.add(submit);
 		
-		SpringUtilities.makeCompactGrid(taskPanel,
-				taskModel.taskItems.size() + 1, 2, //rows, cols
-                6, 6,        //initX, initY
-                6, 6);       //xPad, yPad
+		if(taskModel.team != TeamType.accountsPayable && 
+		   taskModel.team != TeamType.deskside)
+		{
+			JButton deny = new JButton("Deny Request");
+			deny.addActionListener(new DenyListener());
+			deny.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
+			taskPanel.add(deny);
+		}
 		
+		taskPanel.setBorder(BorderFactory.createEmptyBorder(20,0,0,0));
 		
 		// look into the default close operation
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -121,6 +131,7 @@ public class TaskChecklistView extends JFrame {
 
 			taskItem.isComplete = !taskItem.isComplete;
 			taskModel.updateIsComplete();
+			
 			if(taskItem.isComplete)
 			{
 				button.setBackground(Color.GREEN);				

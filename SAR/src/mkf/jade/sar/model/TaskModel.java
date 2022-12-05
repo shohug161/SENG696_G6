@@ -54,7 +54,7 @@ public class TaskModel implements Serializable
 			
 			while(allTaskItems.hasNext())
 			{
-				allComplete = allComplete && allTaskItems.next().isComplete;
+				allComplete = allTaskItems.next().isComplete && allComplete;
 			}
 			isComplete = allComplete;
 		}
