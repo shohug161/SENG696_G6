@@ -134,7 +134,7 @@ public class NewRequestView extends JFrame {
 		
 		// TODO
 		// look into the default close operation
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
  
         //Set up the content pane.
         panel.setOpaque(true);  //content panes must be opaque

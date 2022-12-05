@@ -85,7 +85,7 @@ public class ZoneManagerView extends JFrame {
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
 		
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
  
         updatePanel.setOpaque(true);  //content panes must be opaque
 		frame.add("South", updatePanel);

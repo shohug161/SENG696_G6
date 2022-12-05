@@ -85,6 +85,8 @@ public class LoginView extends JFrame {
 		password = new JPasswordField();
 		
 		loginButton = new JButton("Login");
+		
+		frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);;
 	}
 	
 	/*******************************  METHODS   ****************************************/	
@@ -138,6 +140,7 @@ public class LoginView extends JFrame {
 	
 	public void displayHomePage(boolean isRequestor) {
 		
+		frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		JButton sar = new JButton("Submit a new Software Request");
 		frame = new JFrame("Home Page");
 		selectionPanel = new JPanel();
