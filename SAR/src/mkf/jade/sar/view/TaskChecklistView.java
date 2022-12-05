@@ -34,6 +34,8 @@ public class TaskChecklistView extends JFrame {
 		frame = new JFrame();
 
 		taskModel = task;
+		frame = new JFrame();
+
 		RequestInfoModel requestInfo = taskModel.requestInfo;
 		
 		requestPanel = new JPanel();
@@ -79,6 +81,8 @@ public class TaskChecklistView extends JFrame {
 				approve.setText("Approved");
 				approve.setEnabled(false);
 			}
+			approve.revalidate();
+			approve.repaint();
 			
 			taskPanel.add(label);
 			label.setLabelFor(approve);
@@ -100,11 +104,12 @@ public class TaskChecklistView extends JFrame {
 		{
 			JButton deny = new JButton("Deny Request");
 			deny.addActionListener(new DenyListener());
-			//deny.setBorder(BorderFactory.createEmptyBorder(15,0,0,0));
+
+			deny.setBorder(BorderFactory.createEmptyBorder(15,0,10,0));
 			taskPanel.add(deny);
 		}
 		
-		taskPanel.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
+		taskPanel.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
 		
 		// look into the default close operation
         frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
