@@ -49,7 +49,7 @@ public class SchedulerAgent extends EnhancedAgent
 	private InstallationInfo findInstallerAndTime()
 	{
 		// Due to time constraints we could not mock a proper scheduling system, but this is where we would look for 
-		// the soonest available installer to install the system
+		// the soonest available installer to install system
 		return new InstallationInfo(new Timestamp(ZonedDateTime.now().toInstant().toEpochMilli() + 604800000), "Kevin Gates");
 	}
 	
