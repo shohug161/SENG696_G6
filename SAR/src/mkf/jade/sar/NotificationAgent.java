@@ -131,7 +131,9 @@ public class NotificationAgent extends EnhancedAgent {
 		// Because of time constraints and technical complexities we could not get emails 
 		// working in time for the demo. Instead we are printing the intended emaail to 
 		// the console
+		System.out.println("<============================================================>");
 		System.out.println("EMAIL \nTo: " + recipient + "\nCONTENT:\n" + contents);
+		System.out.println("<============================================================>");
 	}
 	
 	/**
@@ -148,7 +150,7 @@ public class NotificationAgent extends EnhancedAgent {
 				result = "Zone Manager";
 				break;
 			case asrc:
-				result = "Architecture and Security, Risk and Compliance";
+				result = "Architecture, Security, Risk and Compliance";
 				break;
 			case aws:
 				result = "Apps and Web Services";
@@ -158,6 +160,7 @@ public class NotificationAgent extends EnhancedAgent {
 				break;
 			case privacy:
 				result = "Privacy Office";
+				break;
 			case supplyChain:
 				result = "Supply Chain";
 				break;

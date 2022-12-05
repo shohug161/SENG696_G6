@@ -102,16 +102,16 @@ public class ViewController {
 	 * @param id The request id that's been validated
 	 * @param level The level that's been confirmed for the request by the zone manager
 	 */
-	public void requestValidated(int id, InformationType level)
+	public void requestValidated(int requestID, InformationType level)
 	{
 		displayHomePage();
-		TaskModel task = getTaskByRequestID(id);
+		TaskModel task = getTaskByRequestID(requestID);
 		task.requestInfo.informationType = level;
 		completeTask(task);
 		
 		uiAgent.taskComplete(task);
 		
-		selectRequestUI.removeRequest(id);
+		selectRequestUI.removeRequest(requestID);
 	}
 	
 	/**
@@ -156,7 +156,8 @@ public class ViewController {
 	public void taskItemComplete(TaskModel task)
 	{
 		// select request UI again
-		if (task.isComplete) {
+		if (task.isComplete) 
+		{
 			selectRequestUI.removeRequest(task.requestInfo.requestID);
 		}
 		uiAgent.taskComplete(task);
@@ -200,6 +201,7 @@ public class ViewController {
 	 */
 	public void userLoggedOut()
 	{
+		
 		loginUI = new LoginView("Login", this);
 		tasks.clear();
 		uiAgent.userLogon(TeamType.noTeam);
