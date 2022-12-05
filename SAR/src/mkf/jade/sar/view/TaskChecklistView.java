@@ -3,7 +3,6 @@ package mkf.jade.sar.view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -61,7 +60,7 @@ public class TaskChecklistView extends JFrame {
 		comments.setAlignmentX(LEFT_ALIGNMENT);
 		requestPanel.add(comments);
 		
-		frame.add("North", requestPanel);
+		frame.getContentPane().add("North", requestPanel);
 		
 		taskPanel = new JPanel(new SpringLayout());
 		
@@ -75,18 +74,11 @@ public class TaskChecklistView extends JFrame {
 			taskPanel.add(approve);
 		}
 		
-		//JLabel label = new JLabel("");
 		JButton deny = new JButton("Deny Request");
 		deny.addActionListener(new DenyListener());
-		//taskPanel.add(label);
-		//label.setLabelFor(deny);
 		taskPanel.add(deny);
-		
-		//JLabel slabel = new JLabel("");
 		JButton submit = new JButton("Submit");
 		submit.addActionListener(new SubmitTasks());
-		//taskPanel.add(slabel);
-		//slabel.setLabelFor(submit);
 		taskPanel.add(submit);
 		
 		SpringUtilities.makeCompactGrid(taskPanel,
@@ -99,8 +91,9 @@ public class TaskChecklistView extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Set up the content pane.
+        frame.revalidate();
         taskPanel.setOpaque(true);  //content panes must be opaque
-		frame.add("South", taskPanel);
+		frame.getContentPane().add("South", taskPanel);
 		
 		frame.pack();
 		frame.setVisible(true);
@@ -153,7 +146,7 @@ public class TaskChecklistView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			m_viewController.userDeniedRequest(taskModel.requestInfo.requestID);
-			dispose();
+			frame.dispose();
 			m_viewController.displayHomePage();
 		}
 	}
@@ -168,7 +161,7 @@ public class TaskChecklistView extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// send task list to the view controller to send to UI agent
 			m_viewController.taskItemComplete(taskModel);
-			dispose();
+			frame.dispose();
 			m_viewController.displayHomePage();
 		}
 	}

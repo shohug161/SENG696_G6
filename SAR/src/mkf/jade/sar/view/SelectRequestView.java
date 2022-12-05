@@ -133,6 +133,7 @@ public class SelectRequestView extends JFrame {
 			{
 				m_requestIDRefList.remove(i);
 				m_requestsListModel.remove(i);
+				requests.remove(i);
 			}
 		}
 		

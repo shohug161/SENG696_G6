@@ -23,7 +23,7 @@ public class NewRequestView extends JFrame {
 	
 	private ViewController m_viewController;
 	private JLabel nameLabel, softwareLabel, informationLevelLabel, departmentLabel, reasonLabel, costLabel, numUsersLabel, emailLabel, 
-					vendorLabel, vendorEmailLabel, commentsLabel;
+					vendorLabel, vendorEmailLabel, commentsLabel, requestLabel;
 	private JTextField name, software, informationLevel, department, reason, cost, numUsers, email, vendor, vendorEmail, comments;
 	private JButton submitRequest;
 	private JPanel panel;
@@ -61,6 +61,7 @@ public class NewRequestView extends JFrame {
 		vendorEmail = new JTextField();
 		comments = new JTextField();
 		submitRequest = new JButton("Submit Request");
+		requestLabel = new JLabel("");
 		
 		panel = new JPanel(new SpringLayout());
 	}
@@ -120,7 +121,6 @@ public class NewRequestView extends JFrame {
 		commentsLabel.setLabelFor(comments);
 		panel.add(comments);
 		
-		JLabel requestLabel = new JLabel("");
 		panel.add(requestLabel);
 		requestLabel.setLabelFor(submitRequest);
 		panel.add(submitRequest);
@@ -140,9 +140,23 @@ public class NewRequestView extends JFrame {
         panel.setOpaque(true);  //content panes must be opaque
         frame.setContentPane(panel);
  
-        //Display the window.
-        //frame.pack();
+        frame.pack();
         frame.setVisible(true);
+	}
+	
+	private void clearText()
+	{
+		name.setText("");
+		software.setText("");
+		informationLevel.setText("");
+		department.setText("");
+		reason.setText("");
+		cost.setText("");
+		numUsers.setText("");
+		email.setText("");
+		vendor.setText("");
+		vendorEmail.setText("");
+		comments.setText("");
 	}
 	
 	private RequestInfoModel generateRequestInfo() throws Exception
@@ -166,8 +180,8 @@ public class NewRequestView extends JFrame {
 			try
 			{
 				m_viewController.newRequestAdded(generateRequestInfo());
-				
 				frame.dispose();
+				clearText();
 				m_viewController.displayLoginInfo();
 				
 			}

@@ -24,13 +24,7 @@ public class ZoneManagerView extends JFrame {
 	{
 		super("Zone Manager Approval");
 		m_viewController = vc;
-		requestPanel = new JPanel();
-		requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.Y_AXIS));
-		updatePanel = new JPanel(new SpringLayout());
-		frame = new JFrame("Verify Information Level");
-		frame.setSize(400, 600);
-		frame.setTitle("Zone Manager Approval");
-		informationType = new JTextField();
+		
 	}
 	
 	// TODO
@@ -44,6 +38,13 @@ public class ZoneManagerView extends JFrame {
 	
 	public void display(RequestInfoModel requestInfo)
 	{
+		requestPanel = new JPanel();
+		requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.Y_AXIS));
+		updatePanel = new JPanel(new SpringLayout());
+		frame = new JFrame("Verify Information Level");
+		frame.setSize(400, 600);
+		frame.setTitle("Zone Manager Approval");
+		informationType = new JTextField();
 		
 		JLabel software = new JLabel("Software:\n" + requestInfo.softwareName);
 		software.setAlignmentX(LEFT_ALIGNMENT);
@@ -84,12 +85,8 @@ public class ZoneManagerView extends JFrame {
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
 		
-		
-		// TODO
-		// look into the default close operation
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
-        //Set up the content pane.
         updatePanel.setOpaque(true);  //content panes must be opaque
 		frame.add("South", updatePanel);
 		
