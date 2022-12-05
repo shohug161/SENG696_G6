@@ -36,6 +36,9 @@ public class SelectRequestView extends JFrame {
 	 */
 	private DefaultListModel<String> m_requestsListModel;
 	
+	/**
+	 * List of requests
+	 */
 	private ArrayList<RequestInfoModel> requests;
 	
 	/**
@@ -104,8 +107,8 @@ public class SelectRequestView extends JFrame {
 		if(!m_requestIDRefList.contains(requestInfo.requestID))
 		{
 			
-			String request = Integer.toString(requestInfo.requestID) + ": " + requestInfo.softwareName + ", Vendor: " +
-								requestInfo.vendorName + ", Requestor: " + requestInfo.requestorName;
+			String request = "  " + Integer.toString(requestInfo.requestID) + ": " + requestInfo.softwareName + ",    Vendor: " +
+								requestInfo.vendorName + ",    Requestor: " + requestInfo.requestorName;
 			
 			requests.add(requestInfo);
 
