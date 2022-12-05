@@ -173,7 +173,7 @@ public class SchedulerAgent extends EnhancedAgent
 			try {
 				m_dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 				
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -193,7 +193,7 @@ public class SchedulerAgent extends EnhancedAgent
 				preparedStmt.setString(3, installInfo.installer);
 				preparedStmt.execute();
 			
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

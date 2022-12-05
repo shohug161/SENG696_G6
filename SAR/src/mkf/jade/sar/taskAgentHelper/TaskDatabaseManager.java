@@ -70,7 +70,7 @@ public class TaskDatabaseManager
 		try {
 			Statement stmt = m_dbConnection.createStatement();
 			result = stmt.executeQuery(query);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -103,7 +103,7 @@ public class TaskDatabaseManager
 			
 			preparedStmt.execute();
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

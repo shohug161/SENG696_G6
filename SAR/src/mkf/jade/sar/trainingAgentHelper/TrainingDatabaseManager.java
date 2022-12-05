@@ -45,7 +45,7 @@ public class TrainingDatabaseManager
 		try {
 			m_dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -65,7 +65,7 @@ public class TrainingDatabaseManager
 			preparedStmt.setBoolean(4, true);
 			preparedStmt.execute();
 		
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
